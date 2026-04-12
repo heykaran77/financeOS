@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { Collapsible as CollapsiblePrimitive } from "@base-ui/react/collapsible";
-import type React from "react";
-import { cn } from "@/lib/utils";
+import { Collapsible as CollapsiblePrimitive } from '@base-ui/react/collapsible';
+import type React from 'react';
+import { cn } from '@/lib/utils';
 
 export function Collapsible({
   ...props
@@ -16,7 +16,7 @@ export function CollapsibleTrigger({
 }: CollapsiblePrimitive.Trigger.Props): React.ReactElement {
   return (
     <CollapsiblePrimitive.Trigger
-      className={cn("cursor-pointer", className)}
+      className={cn('cursor-pointer', className)}
       data-slot="collapsible-trigger"
       {...props}
     />
@@ -30,7 +30,7 @@ export function CollapsiblePanel({
   return (
     <CollapsiblePrimitive.Panel
       className={cn(
-        "h-(--collapsible-panel-height) overflow-hidden transition-[height] duration-200 data-ending-style:h-0 data-starting-style:h-0",
+        'h-(--collapsible-panel-height) overflow-hidden transition-[height] duration-200 data-ending-style:h-0 data-starting-style:h-0',
         className,
       )}
       data-slot="collapsible-panel"
