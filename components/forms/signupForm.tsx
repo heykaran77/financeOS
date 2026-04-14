@@ -5,7 +5,6 @@ import {
   Field,
   FieldDescription,
   FieldGroup,
-  FieldSet,
   FieldLabel,
   FieldSeparator,
 } from '@/components/ui/field';
@@ -13,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import Image from 'next/image';
 import Link from 'next/link';
 
-export function LoginForm({
+export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<'div'>) {
@@ -24,9 +23,9 @@ export function LoginForm({
           <form className="p-6 md:p-8">
             <FieldGroup>
               <div className="flex flex-col items-center gap-2 text-center">
-                <h1 className="text-2xl font-bold">Welcome back</h1>
+                <h1 className="text-2xl font-bold">Create your account</h1>
                 <p className="text-muted-foreground text-sm text-balance">
-                  Login to your Acme Inc account
+                  Enter your email below to create your account
                 </p>
               </div>
               <Field>
@@ -39,20 +38,22 @@ export function LoginForm({
                 />
               </Field>
               <Field>
-                <div className="flex w-full items-center">
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <a
-                    href="#"
-                    className="ml-auto text-sm underline-offset-2 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
-                <Input id="password" type="password" required />
+                <Field className="grid grid-cols-2 gap-4">
+                  <Field>
+                    <FieldLabel htmlFor="password">Password</FieldLabel>
+                    <Input id="password" type="password" required />
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor="confirm-password">
+                      Confirm Password
+                    </FieldLabel>
+                    <Input id="confirm-password" type="password" required />
+                  </Field>
+                </Field>
               </Field>
               <Field>
                 <Button type="submit" className="w-full">
-                  Login
+                  Create Account
                 </Button>
               </Field>
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
@@ -66,7 +67,7 @@ export function LoginForm({
                       fill="currentColor"
                     />
                   </svg>
-                  <span className="sr-only">Login with Apple</span>
+                  <span className="sr-only">Sign up with Apple</span>
                 </Button>
                 <Button variant="outline" type="button">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -75,7 +76,7 @@ export function LoginForm({
                       fill="currentColor"
                     />
                   </svg>
-                  <span className="sr-only">Login with Google</span>
+                  <span className="sr-only">Sign up with Google</span>
                 </Button>
                 <Button variant="outline" type="button">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -84,12 +85,12 @@ export function LoginForm({
                       fill="currentColor"
                     />
                   </svg>
-                  <span className="sr-only">Login with Meta</span>
+                  <span className="sr-only">Sign up with Meta</span>
                 </Button>
-                <FieldDescription className="col-span-full text-center">
-                  Don&apos;t have an account?{' '}
-                  <Link className="text-blue-500" href="/auth/sign-up">
-                    Sign up
+                <FieldDescription className="col-span-3 text-center">
+                  Already have an account?{' '}
+                  <Link className="text-blue-500" href="/auth/login">
+                    Login
                   </Link>
                 </FieldDescription>
               </Field>

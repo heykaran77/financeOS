@@ -1,6 +1,8 @@
 import NavLinks from '@/components/common/navLinks';
+import { Button } from '@/components/ui/button';
 import { NavbarConfig } from '@/config/navbarConfig';
 import { CommandIcon } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Navbar() {
   return (
@@ -10,6 +12,10 @@ export default function Navbar() {
         <p className="text-md font-advercase-regular">FinanceOS</p>
       </div>
       <NavLinks navItems={NavbarConfig.navbarLinks} />
+
+      <Button>
+        <Link href={'/auth/sign-up'}>Get Started</Link>
+      </Button>
     </nav>
   );
 }
