@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Inter, Geist_Mono } from 'next/font/google';
 import { cn } from '@/lib/utils';
-import Navbar from '@/components/common/navbar';
 
 const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-mono' });
 
@@ -30,10 +29,7 @@ export default function RootLayout({
         geistMono.variable,
       )}
     >
-      <body className="flex min-h-full flex-col">
-        <Navbar />
-        {children}
-      </body>
+      <body className="flex min-h-full flex-col">{children}</body>
     </html>
   );
 }
