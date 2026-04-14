@@ -3,6 +3,8 @@
 import { Field as FieldPrimitive } from '@base-ui/react/field';
 import type React from 'react';
 import { cn } from '@/lib/utils';
+import { Separator } from '@/components/ui/separator';
+import { Fieldset as FieldSet } from './fieldset';
 
 export function Field({
   className,
@@ -77,4 +79,41 @@ export const FieldControl: typeof FieldPrimitive.Control =
 export const FieldValidity: typeof FieldPrimitive.Validity =
   FieldPrimitive.Validity;
 
-export { FieldPrimitive };
+export function FieldGroup({
+  className,
+  ...props
+}: React.ComponentProps<'div'>): React.ReactElement {
+  return (
+    <div
+      className={cn('flex flex-col gap-6', className)}
+      data-slot="field-group"
+      {...props}
+    />
+  );
+}
+
+export function FieldSeparator({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<'div'>): React.ReactElement {
+  return (
+    <div
+      className={cn('relative flex items-center justify-center', className)}
+      data-slot="field-separator"
+      {...props}
+    >
+      <Separator className="absolute w-full" />
+      {children && (
+        <div
+          className="text-muted-foreground bg-background relative px-2 text-xs font-medium"
+          data-slot="field-separator-content"
+        >
+          {children}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export { FieldPrimitive, FieldSet };
