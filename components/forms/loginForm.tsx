@@ -13,15 +13,14 @@ import {
 import { Input } from '@/components/ui/input';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState, useTransition } from 'react';
+import { useTransition } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { LoginSchema, LoginSchemaType } from '@/types/authSchema';
-import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import spinners, { type BrailleSpinnerName } from 'unicode-animations';
 import { loginUser } from '@/actions/user';
 import { useRouter } from 'next/navigation';
 import { toastManager } from '@/components/ui/toast';
+import Spinner from '@/components/common/unicodeSpinner';
 
 export function LoginForm({
   className,
@@ -169,36 +168,5 @@ export function LoginForm({
         </CardContent>
       </Card>
     </div>
-  );
-}
-
-function Spinner({
-  name = 'braille',
-  children,
-}: {
-  name: BrailleSpinnerName;
-  children: React.ReactNode;
-}) {
-  const [frame, setFrame] = useState(0);
-  const s = spinners[name];
-
-  useEffect(() => {
-    if (!s) return;
-    const timer = setInterval(
-      () => setFrame((f) => (f + 1) % s.frames.length),
-      s.interval,
-    );
-    return () => clearInterval(timer);
-  }, [name, s]);
-
-  if (!s) return null;
-
-  return (
-    <span className="inline-flex items-center gap-2">
-      <span className="inline-block min-w-8 text-center font-mono">
-        {s.frames[frame]}
-      </span>
-      {children}
-    </span>
   );
 }

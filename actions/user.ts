@@ -28,4 +28,21 @@ export const signUpUser = async (
   name: SignUpSchemaType['name'],
   email: SignUpSchemaType['email'],
   password: SignUpSchemaType['password'],
-) => {};
+) => {
+  try {
+    await auth.api.signUpEmail({
+      body: {
+        name,
+        email,
+        password,
+      },
+    });
+
+    return { success: true, message: 'Sign up successful' };
+  } catch (error) {
+    if (error instanceof Error) {
+      return { success: false, message: error.message };
+    }
+    return { success: false, message: 'Sign up failed' };
+  }
+};
