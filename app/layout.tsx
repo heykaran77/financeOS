@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Inter, Geist_Mono } from 'next/font/google';
 import { cn } from '@/lib/utils';
+import { AnchoredToastProvider, ToastProvider } from '@/components/ui/toast';
 
 const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-mono' });
 
@@ -29,7 +30,11 @@ export default function RootLayout({
         geistMono.variable,
       )}
     >
-      <body className="flex min-h-full flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        <ToastProvider>
+          <AnchoredToastProvider>{children}</AnchoredToastProvider>
+        </ToastProvider>
+      </body>
     </html>
   );
 }

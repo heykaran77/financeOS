@@ -8,9 +8,5 @@ export const NavbarConfig = {
       label: 'Transactions',
       href: '/transactions',
     },
-    {
-      label: 'Contact',
-      href: '/contact',
-    },
   ],
 };
