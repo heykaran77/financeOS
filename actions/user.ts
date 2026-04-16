@@ -38,7 +38,7 @@ export const signUpUser = async (
       },
     });
 
-    return { success: true, message: 'Sign up successful' };
+    return { success: true, message: 'Please verify your email to continue' };
   } catch (error) {
     if (error instanceof Error) {
       return { success: false, message: error.message };
