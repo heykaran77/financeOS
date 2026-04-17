@@ -2,7 +2,7 @@ export const NavbarConfig = {
   navbarLinks: [
     {
       label: 'Dashboard',
-      href: '/',
+      href: '/dashboard',
     },
     {
       label: 'Transactions',
