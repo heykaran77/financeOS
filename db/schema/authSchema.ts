@@ -1,5 +1,11 @@
 import { relations } from 'drizzle-orm';
 import { pgTable, text, timestamp, boolean, index } from 'drizzle-orm/pg-core';
+import { bankAccount } from './bankAccountSchema';
+import { category } from './categorySchema';
+import { transaction } from './transactionSchema';
+import { budget } from './budgetSchema';
+import { recurringTransaction } from './recurringSchema';
+import { tag } from './tagSchema';
 
 export const user = pgTable('user', {
   id: text('id').primaryKey(),
@@ -76,6 +82,12 @@ export const verification = pgTable(
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
+  bankAccounts: many(bankAccount),
+  categories: many(category),
+  transactions: many(transaction),
+  budgets: many(budget),
+  recurringTransactions: many(recurringTransaction),
+  tags: many(tag),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
