@@ -4,14 +4,9 @@ import {
   SidebarInset,
 } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/common/app-sidebar';
-import { Kbd, KbdGroup } from '@/components/ui/kbd';
-import { Command, CommandIcon } from 'lucide-react';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipPopup,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { KbdGroup } from '@/components/ui/kbd';
+import { Command } from 'lucide-react';
+import { Tooltip, TooltipPopup, TooltipTrigger } from '@/components/ui/tooltip';
 
 export default function DashboardLayout({
   children,
