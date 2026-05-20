@@ -17,7 +17,6 @@ import { useTransition } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { LoginSchema, LoginSchemaType } from '@/types/authSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { loginUser } from '@/actions/user';
 import { useRouter } from 'next/navigation';
 import { toastManager } from '@/components/ui/toast';
 import Spinner from '@/components/common/unicodeSpinner';
@@ -40,21 +39,24 @@ export function LoginForm({
   const onSubmit = (data: LoginSchemaType) => {
     startLoginTransition(async () => {
       try {
-        const response = await loginUser(data.email, data.password);
-        if (response.success) {
+        const response = await authClient.signIn.email({
+          email: data.email,
+          password: data.password,
+        });
+        if (response.error) {
+          toastManager.add({
+            title: 'Login failed',
+            description: response.error.message,
+            type: 'error',
+          });
+        } else {
           router.push('/dashboard');
           toastManager.add({
             title: 'Login successful',
-            description: response.message,
+            description: 'Welcome back to your Dashboard!',
             type: 'success',
           });
           form.reset();
-        } else {
-          toastManager.add({
-            title: 'Login failed',
-            description: response.message,
-            type: 'error',
-          });
         }
       } catch (error) {
         console.log(error);

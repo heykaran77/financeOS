@@ -17,11 +17,9 @@ import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SignUpSchema, SignUpSchemaType } from '@/types/authSchema';
 import { useTransition } from 'react';
-import { signUpUser } from '@/actions/user';
 import { useRouter } from 'next/navigation';
 import { toastManager } from '@/components/ui/toast';
 import Spinner from '@/components/common/unicodeSpinner';
-import { auth } from '@/lib/auth';
 import { authClient } from '@/lib/auth-client';
 
 export function SignupForm({
@@ -46,20 +44,24 @@ export function SignupForm({
   const onSubmit = (data: SignUpSchemaType) => {
     startSignUpTransition(async () => {
       try {
-        const response = await signUpUser(data.name, data.email, data.password);
-        if (response.success) {
+        const response = await authClient.signUp.email({
+          email: data.email,
+          password: data.password,
+          name: data.name,
+        });
+        if (response.error) {
+          toastManager.add({
+            title: 'Sign up failed',
+            description: response.error.message,
+            type: 'error',
+          });
+        } else {
           toastManager.add({
             title: 'Sign up successful',
-            description: response.message,
+            description: 'Account created! Please check your email to verify.',
             type: 'success',
           });
           router.push('/auth/login');
-        } else {
-          toastManager.add({
-            title: 'Sign up failed',
-            description: response.message,
-            type: 'error',
-          });
         }
       } catch (error) {
         console.error(error);
