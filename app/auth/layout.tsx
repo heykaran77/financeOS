@@ -1,3 +1,4 @@
+import Container from '@/components/common/container';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
@@ -8,15 +9,20 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative flex flex-1 flex-col items-center justify-center p-6 pt-0 md:p-10 md:pt-0">
-      <Button
-        variant="ghost"
-        className="absolute top-5 left-5 gap-2 md:top-8 md:left-8"
-      >
-        <ArrowLeft className="size-4" />
-        <Link href="/">Back to Home</Link>
-      </Button>
-      <div className="w-full max-w-sm md:max-w-4xl">{children}</div>
-    </div>
+    <Container className="flex flex-col space-y-10 py-10">
+      <header className="flex items-center">
+        <Button
+          variant="ghost"
+          className="gap-2 p-2"
+          render={<Link href="/" />}
+        >
+          <ArrowLeft className="size-4" />
+          <span>Back to Home</span>
+        </Button>
+      </header>
+      <main className="flex items-center justify-center">
+        <div className="w-full max-w-sm md:max-w-4xl">{children}</div>
+      </main>
+    </Container>
   );
 }
