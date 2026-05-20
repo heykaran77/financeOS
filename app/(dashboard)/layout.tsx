@@ -19,9 +19,7 @@ export default function DashboardLayout({
       <SidebarInset>
         <header className="flex h-14 shrink-0 items-center gap-2 px-4">
           <Tooltip>
-            <TooltipTrigger>
-              <SidebarTrigger className="-ml-1" />
-            </TooltipTrigger>
+            <TooltipTrigger render={<SidebarTrigger className="-ml-1" />} />
             <TooltipPopup>
               <KbdGroup className="text-neutral-500">
                 <Command className="size-3" />B
