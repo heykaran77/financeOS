@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FinanceOS
+
+A modern, full-stack financial workspace and dashboard built with Next.js 16.
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router, Turbopack, Proxy Middleware)
+- **Authentication:** Better Auth (Email/Password & Google Social Sign-In)
+- **Database & ORM:** PostgreSQL (Supabase) with Drizzle ORM
+- **Styling & UI:** Tailwind CSS v4, Motion, Radix UI, Base UI, Shadcn/ui components
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+Create a `.env` file in the root directory and configure the following environment variables:
+
+```env
+DATABASE_URL=postgresql://...
+BETTER_AUTH_SECRET=your_better_auth_secret
+BETTER_AUTH_URL=http://localhost:3000
+
+GOOGLE_CLIENT_ID=your_google_client_id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+```
+
+### Installation
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+### Running the App
+
+Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `app/`: Next.js App Router paths and pages (e.g., auth, dashboard, API routes)
+- `components/`: Reusable UI components (shadcn/ui primitives, custom forms, sidebar layout)
+- `config/`: Configuration files (navigation configurations, etc.)
+- `lib/`: Initialization code (better-auth instance, DB setup)
+- `types/`: Zod and TypeScript schema definitions
+- `proxy.ts`: Next.js 16 routing and authentication protection middleware
 
-## Learn More
+## Commands
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `npm run dev` - Start the development server
+- `npm run build` - Build the application for production
+- `npm run start` - Start the built production server
+- `npm run lint` - Run ESLint diagnostics
+- `npm run lint-fix` - Auto-fix ESLint issues
+- `npm run format` - Format code with Prettier
+- `npm run format:check` - Check formatting status
