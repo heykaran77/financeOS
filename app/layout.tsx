@@ -30,7 +30,7 @@ export default function RootLayout({
         geistMono.variable,
       )}
     >
-      <body className="flex min-h-full flex-col">
+      <body className="antialiased" suppressHydrationWarning>
         <ToastProvider>
           <AnchoredToastProvider>{children}</AnchoredToastProvider>
         </ToastProvider>
