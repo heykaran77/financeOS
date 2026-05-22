@@ -3,7 +3,7 @@ import NavLinks from '@/components/common/navLinks';
 import { Button } from '@/components/ui/button';
 import { NavbarConfig } from '@/config/navbarConfig';
 import { auth } from '@/lib/auth';
-import { CommandIcon } from 'lucide-react';
+import Logo from '@/components/common/logo';
 import { headers } from 'next/headers';
 import Link from 'next/link';
 
@@ -13,18 +13,25 @@ export default async function Navbar() {
   });
   const user = session?.user;
   return (
-    <nav className="sticky top-4 z-15 mx-auto flex w-full max-w-2xl items-center justify-between rounded-lg bg-neutral-400/30 px-4 py-4 backdrop-blur-sm">
+    <nav className="pointer-events-none fixed top-4 left-1/2 z-50 flex w-full max-w-2xl -translate-x-1/2 items-center justify-between rounded-lg bg-neutral-800/20 px-4 py-4 backdrop-blur-sm">
       <Link href={'/'} className="flex items-center gap-2">
-        <CommandIcon className="size-6" />
-        <p className="text-md font-advercase-regular">FinanceOS</p>
+        <Logo className="size-6 text-emerald-400" />
+        <p className="text-md font-advercase-regular tracking-tight text-neutral-200">
+          FinanceOS
+        </p>
       </Link>
-      <NavLinks navItems={NavbarConfig.navbarLinks} />
+      <NavLinks
+        navItems={NavbarConfig.navbarLinks}
+        classname="pointer-events-auto"
+      />
       {!user && (
-        <Button>
-          <Link href={'/auth/sign-up'}>Get Started</Link>
+        <Button className="pointer-events-auto">
+          <Link href={'/auth/sign-up'} className="text-neutral-200">
+            Get Started
+          </Link>
         </Button>
       )}
-      {user && <Logout />}
+      {user && <Logout className="pointer-events-auto text-neutral-200" />}
     </nav>
   );
 }

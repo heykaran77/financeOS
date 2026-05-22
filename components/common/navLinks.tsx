@@ -9,11 +9,17 @@ type NavItems = {
   href: string;
 };
 
-export default function NavLinks({ navItems }: { navItems: NavItems[] }) {
+export default function NavLinks({
+  navItems,
+  classname,
+}: {
+  navItems: NavItems[];
+  classname: string;
+}) {
   const [hovered, setHovered] = useState<number | null>(null);
 
   return (
-    <div className="flex items-center">
+    <div className={`flex items-center ${classname}`}>
       {navItems.map((item, idx) => (
         <Link
           key={item.label}
@@ -22,13 +28,13 @@ export default function NavLinks({ navItems }: { navItems: NavItems[] }) {
           onMouseEnter={() => setHovered(idx)}
           onMouseLeave={() => setHovered(null)}
         >
-          <span className="text-md relative z-10 font-medium tracking-tight">
+          <span className="text-md relative z-10 font-medium tracking-tight text-neutral-200">
             {item.label}
           </span>
           {hovered === idx && (
             <motion.div
               layoutId="navbar-hover"
-              className="bg-muted absolute inset-0 z-0 h-full w-full rounded-lg ring ring-neutral-400/30 dark:ring-neutral-400/30"
+              className="absolute inset-0 z-0 h-full w-full rounded-lg bg-emerald-700/40 ring ring-emerald-800/30 dark:ring-emerald-800/30"
               transition={{
                 duration: 0.3,
               }}
