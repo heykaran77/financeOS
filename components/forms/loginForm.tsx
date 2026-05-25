@@ -98,7 +98,7 @@ export function LoginForm({
           control={form.control}
           name="email"
           render={({ field, fieldState }) => (
-            <Field>
+            <Field className="relative">
               <FieldLabel htmlFor="email">Email</FieldLabel>
               <Input
                 id="email"
@@ -108,7 +108,7 @@ export function LoginForm({
                 aria-invalid={fieldState.invalid}
               />
               {fieldState.invalid && (
-                <span className="text-xs text-red-500">
+                <span className="absolute top-full left-0 mt-1 text-xs text-red-500">
                   {fieldState.error?.message}
                 </span>
               )}
@@ -119,7 +119,7 @@ export function LoginForm({
           control={form.control}
           name="password"
           render={({ field, fieldState }) => (
-            <Field>
+            <Field className="relative">
               <div className="flex w-full items-center">
                 <FieldLabel htmlFor="password">Password</FieldLabel>
                 <Link
@@ -137,7 +137,7 @@ export function LoginForm({
                 aria-invalid={fieldState.invalid}
               />
               {fieldState.invalid && (
-                <span className="text-xs text-red-500">
+                <span className="absolute top-full left-0 mt-1 text-xs text-red-500">
                   {fieldState.error?.message}
                 </span>
               )}

@@ -1,12 +1,23 @@
 import Logo from '@/components/common/logo';
 import Link from 'next/link';
 import { ThemeProvider } from '@/components/providers/theme-provider';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
 
-export default function AuthLayout({
+export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (session) {
+    redirect('/dashboard');
+  }
+
   return (
     <ThemeProvider
       attribute="class"
@@ -29,12 +40,19 @@ export default function AuthLayout({
             <div className="w-full max-w-xs">{children}</div>
           </div>
         </div>
-        <div className="bg-muted relative hidden lg:block">
+        <div className="bg-muted pointer-events-none relative hidden lg:block">
           <img
             src="/assets/auth-image.webp"
             alt="Image"
             className="absolute inset-0 h-full w-full object-cover object-top-right dark:grayscale"
           />
+
+          <div className="absolute top-24 left-1/2 flex -translate-x-1/2 items-center gap-2 text-white">
+            <Logo className="size-8 text-white dark:text-emerald-400" />
+            <h2 className="font-advercase-regular text-2xl tracking-tight">
+              FinanceOS
+            </h2>
+          </div>
         </div>
       </div>
     </ThemeProvider>

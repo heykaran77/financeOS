@@ -101,7 +101,7 @@ export function SignupForm({
           control={form.control}
           name="name"
           render={({ field, fieldState }) => (
-            <Field>
+            <Field className="relative">
               <FieldLabel htmlFor="name">Full Name</FieldLabel>
               <Input
                 id="name"
@@ -111,7 +111,7 @@ export function SignupForm({
                 aria-invalid={fieldState.invalid}
               />
               {fieldState.invalid && (
-                <span className="text-xs text-red-500">
+                <span className="absolute top-full left-0 mt-1 text-xs text-red-500">
                   {fieldState.error?.message}
                 </span>
               )}
@@ -122,7 +122,7 @@ export function SignupForm({
           control={form.control}
           name="email"
           render={({ field, fieldState }) => (
-            <Field>
+            <Field className="relative">
               <FieldLabel htmlFor="email">Email</FieldLabel>
               <Input
                 id="email"
@@ -132,7 +132,7 @@ export function SignupForm({
                 aria-invalid={fieldState.invalid}
               />
               {fieldState.invalid && (
-                <span className="text-xs text-red-500">
+                <span className="absolute top-full left-0 mt-1 text-xs text-red-500">
                   {fieldState.error?.message}
                 </span>
               )}
@@ -143,7 +143,7 @@ export function SignupForm({
           control={form.control}
           name="password"
           render={({ field, fieldState }) => (
-            <Field>
+            <Field className="relative">
               <FieldLabel htmlFor="password">Password</FieldLabel>
               <Input
                 id="password"
@@ -153,7 +153,7 @@ export function SignupForm({
                 aria-invalid={fieldState.invalid}
               />
               {fieldState.invalid && (
-                <span className="text-xs text-red-500">
+                <span className="absolute top-full left-0 mt-1 text-xs text-red-500">
                   {fieldState.error?.message}
                 </span>
               )}
@@ -164,7 +164,7 @@ export function SignupForm({
           control={form.control}
           name="confirmPassword"
           render={({ field, fieldState }) => (
-            <Field>
+            <Field className="relative">
               <FieldLabel htmlFor="confirm-password">
                 Confirm Password
               </FieldLabel>
@@ -176,7 +176,7 @@ export function SignupForm({
                 aria-invalid={fieldState.invalid}
               />
               {fieldState.invalid && (
-                <span className="text-xs text-red-500">
+                <span className="absolute top-full left-0 mt-1 text-xs text-red-500">
                   {fieldState.error?.message}
                 </span>
               )}
