@@ -27,7 +27,7 @@ export function ThemeToggle({ className = '' }: { className?: string }) {
     <button
       type="button"
       className={cn(
-        'flex size-10 items-center justify-center rounded-full border p-2 shadow-sm transition-all duration-300 active:scale-95',
+        'flex size-10 cursor-pointer items-center justify-center rounded-full border p-2 shadow-sm transition-all duration-300 active:scale-95',
         isDark
           ? 'border-zinc-800 bg-zinc-900 text-white'
           : 'border-zinc-200 bg-white text-black',
