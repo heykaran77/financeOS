@@ -13,7 +13,7 @@ export default async function Navbar() {
   });
   const user = session?.user;
   return (
-    <nav className="pointer-events-none fixed top-4 left-1/2 z-50 flex w-full max-w-2xl -translate-x-1/2 items-center justify-between rounded-lg bg-neutral-800/20 px-4 py-4 backdrop-blur-sm">
+    <nav className="pointer-events-none fixed top-0 left-1/2 z-50 flex w-full max-w-2xl -translate-x-1/2 items-center justify-between rounded-none bg-neutral-800/20 px-4 py-4 backdrop-blur-sm md:top-4 md:rounded-lg">
       <Link href={'/'} className="pointer-events-auto flex items-center gap-2">
         <Logo className="size-6 text-emerald-400" />
         <p className="text-md font-advercase-regular tracking-tight text-neutral-200">
@@ -27,15 +27,17 @@ export default async function Navbar() {
       />
       {!user && (
         <Button
-          className="pointer-events-auto"
+          className="pointer-events-auto text-sm"
           render={<Link href={'/auth/sign-up'} />}
         >
-          <span className="md:text-normal text-sm text-neutral-200">
+          <span className="text-neutral-200 dark:text-neutral-800">
             Get Started
           </span>
         </Button>
       )}
-      {user && <Logout className="pointer-events-auto text-neutral-200" />}
+      {user && (
+        <Logout className="pointer-events-auto text-sm text-neutral-200 dark:text-neutral-800" />
+      )}
     </nav>
   );
 }

@@ -5,6 +5,8 @@ import { authClient } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
 import { toastManager } from '../ui/toast';
 
+import { cn } from '@/lib/utils';
+
 export default function Logout({ children, ...props }: ButtonProps) {
   const router = useRouter();
   const handleLogout = async () => {
@@ -30,7 +32,11 @@ export default function Logout({ children, ...props }: ButtonProps) {
     }
   };
   return (
-    <Button {...props} onClick={handleLogout}>
+    <Button
+      {...props}
+      onClick={handleLogout}
+      className={cn('text-white dark:text-black', props.className)}
+    >
       {children || 'Logout'}
     </Button>
   );

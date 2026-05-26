@@ -3,6 +3,7 @@ import './globals.css';
 import { Inter, Geist_Mono } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { AnchoredToastProvider, ToastProvider } from '@/components/ui/toast';
+import { ThemeProvider } from '@/components/providers/theme-provider';
 
 const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-mono' });
 
@@ -31,9 +32,16 @@ export default function RootLayout({
       )}
     >
       <body className="antialiased" suppressHydrationWarning>
-        <ToastProvider>
-          <AnchoredToastProvider>{children}</AnchoredToastProvider>
-        </ToastProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ToastProvider>
+            <AnchoredToastProvider>{children}</AnchoredToastProvider>
+          </ToastProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
