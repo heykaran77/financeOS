@@ -27,7 +27,7 @@ export default async function AuthLayout({
             href="/"
             className="font-advercase-regular flex items-center gap-2 font-medium"
           >
-            <Logo className="text-primary size-6" />
+            <Logo className="text-primary size-6 dark:text-emerald-400" />
             <h1 className="text-xl">FinanceOS</h1>
           </Link>
           <ThemeToggle />
