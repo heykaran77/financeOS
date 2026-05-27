@@ -1,4 +1,4 @@
-const Svg1 = () => {
+const DollarSVG = () => {
   return (
     <svg
       width="200"
@@ -236,4 +236,4 @@ const Svg1 = () => {
   );
 };
 
-export default Svg1;
+export default DollarSVG;

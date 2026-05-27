@@ -2,7 +2,7 @@ import GradientBlinds from '../GradientBlinds';
 
 export default function CustomGradientBlinds() {
   return (
-    <div className="absolute inset-0 z-0 h-full w-full overflow-hidden bg-black">
+    <div className="absolute inset-0 z-0 h-full w-full overflow-hidden">
       <GradientBlinds
         gradientColors={['#0c0c0c', '#10B981']}
         angle={20}
