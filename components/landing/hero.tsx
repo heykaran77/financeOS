@@ -11,8 +11,8 @@ export default function Hero() {
   return (
     <div className="relative w-full mask-b-from-80%">
       <CustomGradientBlinds />
-      <Container className="pt-24 md:pt-32">
-        <div className="mx-auto max-w-4xl">
+      <Container className="mx-auto pt-32">
+        <div className="">
           <div className="pointer-events-none relative flex flex-col items-center justify-center space-y-4 text-center md:space-y-12">
             <div className="space-y-2 md:space-y-4">
               <div className="flex items-center justify-center gap-2 md:gap-4">
@@ -45,7 +45,7 @@ export default function Hero() {
                 Star on Github
               </Button>
             </div>
-            <div className="relative w-full rounded-xl border border-neutral-800 bg-neutral-950/50 p-1 shadow-2xl ring-1 ring-white/10 backdrop-blur-sm">
+            <div className="relative w-full max-w-4xl rounded-xl border border-neutral-800 bg-neutral-950/50 p-1 shadow-2xl ring-1 ring-white/10 backdrop-blur-sm">
               <div className="relative overflow-hidden rounded-lg border border-neutral-800">
                 <Image
                   src="/assets/auth-image.webp"
