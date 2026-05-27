@@ -8,7 +8,7 @@ export default function Container({
   props?: React.HTMLAttributes<HTMLDivElement>;
 }) {
   return (
-    <div className={`container mx-auto max-w-7xl px-4 ${className}`} {...props}>
+    <div className={`container mx-auto max-w-4xl ${className}`} {...props}>
       {children}
     </div>
   );
