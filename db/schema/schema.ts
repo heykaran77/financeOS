@@ -30,3 +30,5 @@ export {
   tagRelations,
   transactionTagRelations,
 } from './tagSchema';
+
+export { goal, goalRelations } from './goalSchema';

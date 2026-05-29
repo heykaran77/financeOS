@@ -15,6 +15,7 @@ import { bankAccount } from './bankAccountSchema';
 import { category } from './categorySchema';
 import { recurringTransaction } from './recurringSchema';
 import { transactionTag } from './tagSchema';
+import { goal } from './goalSchema';
 
 // ─── Transactions ───────────────────────────────────────────────
 // Unified table for all money movement: expenses, incomes, and transfers.
@@ -46,6 +47,9 @@ export const transaction = pgTable(
       () => recurringTransaction.id,
       { onDelete: 'set null' },
     ),
+    goalId: text('goal_id').references(() => goal.id, {
+      onDelete: 'set null',
+    }),
     createdAt: timestamp('created_at', { withTimezone: true })
       .defaultNow()
       .notNull(),
@@ -59,6 +63,7 @@ export const transaction = pgTable(
     index('transaction_userId_date_idx').on(table.userId, table.date),
     index('transaction_bankAccountId_idx').on(table.bankAccountId),
     index('transaction_categoryId_idx').on(table.categoryId),
+    index('transaction_goalId_idx').on(table.goalId),
     check(
       'transaction_type_check',
       sql`${table.type} IN ('expense', 'income', 'transfer')`,
@@ -85,6 +90,10 @@ export const transactionRelations = relations(transaction, ({ one, many }) => ({
   recurringTransaction: one(recurringTransaction, {
     fields: [transaction.recurringTransactionId],
     references: [recurringTransaction.id],
+  }),
+  goal: one(goal, {
+    fields: [transaction.goalId],
+    references: [goal.id],
   }),
   transactionTags: many(transactionTag),
 }));
