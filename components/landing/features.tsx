@@ -3,6 +3,7 @@ import Container from '../common/container';
 import SectionHeading from '../common/SectionHeading';
 import DollarSVG from '../pixel-perfect/DollarSVG';
 import LogoBar from '../pixel-perfect/LogoBar';
+import RouletteWheel from '../pixel-perfect/RouletteWheel';
 import { DotPattern } from '../ui/dot-pattern';
 
 export default function Features() {
@@ -41,10 +42,18 @@ export default function Features() {
           <LogoBar className="mx-auto mask-b-to-100%" />
         </BentoCard>
         <BentoCard
-          title="Hellp"
-          description="GG bro how"
-          className="h-full w-full md:row-span-1"
-        />
+          title="Built for clarity."
+          description="Not Complexity."
+          className="flex h-full w-full flex-row items-center justify-between md:row-span-1"
+        >
+          <DotPattern
+            glow={true}
+            className={
+              'mask-[radial-gradient(300px_circle_at_center,white,transparent)]'
+            }
+          />
+          <RouletteWheel className="size-44 shrink-0" />
+        </BentoCard>
       </div>
     </Container>
   );
