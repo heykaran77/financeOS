@@ -17,5 +17,18 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     },
   },
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user) => {
+          if (!user.image) {
+            const seed = encodeURIComponent(user.name || user.email || 'user');
+            user.image = `https://api.dicebear.com/10.x/notionists/svg?seed=${seed}`;
+          }
+          return { data: user };
+        },
+      },
+    },
+  },
   plugins: [nextCookies()],
 });

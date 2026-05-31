@@ -8,6 +8,7 @@ import {
   transactionTag,
   budget,
   recurringTransaction,
+  goal,
 } from './schema/schema';
 
 const USER_ID = 'Dua383C1kaR02uzSbAw0t1L5M7VXdTbg';
@@ -210,6 +211,38 @@ async function seed() {
         amount: '5000.00',
         period: 'monthly',
         startDate: new Date('2026-05-01'),
+      },
+    ]);
+
+    // 8. Goals
+    console.log('Inserting Goals...');
+    await db.insert(goal).values([
+      {
+        userId: USER_ID,
+        name: 'Emergency Fund',
+        description: '6 months of living expenses',
+        targetAmount: '300000.00',
+        currentAmount: '50000.00',
+        targetDate: new Date('2026-12-31'),
+        status: 'in_progress',
+      },
+      {
+        userId: USER_ID,
+        name: 'Europe Vacation',
+        description: 'Trip to Italy and Switzerland',
+        targetAmount: '450000.00',
+        currentAmount: '20000.00',
+        targetDate: new Date('2027-05-01'),
+        status: 'in_progress',
+      },
+      {
+        userId: USER_ID,
+        name: 'New Laptop',
+        description: 'MacBook Pro M4',
+        targetAmount: '250000.00',
+        currentAmount: '250000.00',
+        targetDate: new Date('2026-05-15'),
+        status: 'completed',
       },
     ]);
 
