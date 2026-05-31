@@ -20,9 +20,11 @@ import {
 import { authClient } from '@/lib/auth-client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LogOut, User, CreditCard } from 'lucide-react';
+import { LogOut, User, CreditCard, Plus } from 'lucide-react';
 import { sidebarItems } from '@/config/navigationItemsConfig';
+import { Button } from '@/components/ui/button';
 import Logout from '@/components/common/logout';
+import { ThemeToggle } from '@/components/common/theme-toggle';
 import Logo from './logo';
 import Image from 'next/image';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -76,6 +78,27 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent className="p-2 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:py-4">
+        <SidebarGroup>
+          <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
+            Quick Actions
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu className="gap-0">
+              <SidebarMenuItem className="px-1 group-data-[collapsible=icon]:px-0">
+                <Button
+                  size="sm"
+                  className="w-full justify-start gap-2 border-transparent bg-emerald-600 text-white shadow-emerald-900/20 group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0 hover:bg-emerald-700 focus-visible:ring-emerald-500/50 dark:bg-emerald-600 dark:hover:bg-emerald-700"
+                >
+                  <Plus className="size-4 shrink-0" />
+                  <span className="group-data-[collapsible=icon]:hidden">
+                    New transaction
+                  </span>
+                </Button>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
         <SidebarGroup>
           <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
             Application
@@ -177,16 +200,19 @@ export function AppSidebar() {
                 </MenuPopup>
               </Menu>
             </SidebarMenuItem>
-            <SidebarMenuItem>
+            <SidebarMenuItem className="flex gap-2">
               <Logout
                 variant="default"
-                className="w-full justify-center gap-2 group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:p-0"
+                className="flex flex-1 justify-center gap-2 group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:p-0"
               >
                 <LogOut className="size-4 shrink-0 text-emerald-600 dark:text-emerald-800" />
                 <span className="group-data-[collapsible=icon]:hidden">
                   Logout
                 </span>
               </Logout>
+              <div className="group-data-[collapsible=icon]:hidden">
+                <ThemeToggle className="size-9 shrink-0" />
+              </div>
             </SidebarMenuItem>
           </SidebarMenu>
         ) : null}
