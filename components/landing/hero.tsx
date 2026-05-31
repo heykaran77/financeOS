@@ -48,7 +48,7 @@ export default function Hero() {
             <div className="relative w-full max-w-4xl rounded-xl border border-neutral-800 bg-neutral-950/50 p-1 shadow-2xl ring-1 ring-white/10 backdrop-blur-sm">
               <div className="relative overflow-hidden rounded-lg border border-neutral-800">
                 <Image
-                  src="/assets/auth-image.webp"
+                  src="/assets/dithered-image.png"
                   alt="FinanceOS App Preview"
                   width={1920}
                   height={1080}

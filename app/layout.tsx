@@ -4,6 +4,7 @@ import { Inter, Geist_Mono } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { AnchoredToastProvider, ToastProvider } from '@/components/ui/toast';
 import { ThemeProvider } from '@/components/providers/theme-provider';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-mono' });
 
@@ -39,7 +40,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <ToastProvider>
-            <AnchoredToastProvider>{children}</AnchoredToastProvider>
+            <TooltipProvider>
+              <AnchoredToastProvider>{children}</AnchoredToastProvider>
+            </TooltipProvider>
           </ToastProvider>
         </ThemeProvider>
       </body>
