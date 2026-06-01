@@ -256,9 +256,9 @@ export function TransactionTable({ data, totalCount }: TransactionTableProps) {
 
   return (
     <CardFrame className="flex h-[calc(100svh-14rem)] w-full flex-col overflow-hidden">
-      <div className="min-h-0 flex-1 [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto">
+      <div className="min-h-0 flex-1 [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto [&_div[data-slot=table-container]]:[-ms-overflow-style:none] [&_div[data-slot=table-container]]:[scrollbar-width:none] [&_div[data-slot=table-container]::-webkit-scrollbar]:hidden">
         <Table className="relative table-fixed">
-          <TableHeader className="bg-muted/80 sticky top-0 z-10 shadow-sm backdrop-blur-md">
+          <TableHeader className="sticky top-0 z-10 shadow-sm">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow className="hover:bg-transparent" key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
@@ -266,6 +266,7 @@ export function TransactionTable({ data, totalCount }: TransactionTableProps) {
                   return (
                     <TableHead
                       key={header.id}
+                      className="bg-muted/80 backdrop-blur-md"
                       style={
                         columnSize ? { width: `${columnSize}px` } : undefined
                       }
