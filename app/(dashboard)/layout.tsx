@@ -47,7 +47,7 @@ export default function DashboardLayout({
               </Button>
             </div>
           </header>
-          <div className="flex flex-1 flex-col gap-4 px-4 md:px-8">
+          <div className="flex flex-1 flex-col gap-4 px-4 md:px-8 md:pt-2">
             {children}
           </div>
         </div>
