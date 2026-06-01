@@ -89,7 +89,7 @@ export function AppSidebar() {
                   size="sm"
                   className="w-full justify-start gap-2 border-transparent bg-emerald-600 text-white shadow-emerald-900/20 group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0 hover:bg-emerald-700 focus-visible:ring-emerald-500/50 dark:bg-emerald-600 dark:hover:bg-emerald-700"
                 >
-                  <Plus className="size-4 shrink-0" />
+                  <Plus className="size-5 shrink-0" />
                   <span className="group-data-[collapsible=icon]:hidden">
                     New transaction
                   </span>

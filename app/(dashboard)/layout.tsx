@@ -42,16 +42,17 @@ export default function DashboardLayout({
                 size="sm"
                 className="border-transparent bg-emerald-600 text-white shadow-emerald-900/20 hover:bg-emerald-700 focus-visible:ring-emerald-500/50 dark:bg-emerald-600 dark:hover:bg-emerald-700"
               >
-                <Plus className="mr-1 -ml-1 size-4" />
+                <Plus className="mr-1 -ml-1 size-5" />
                 <span className="hidden sm:inline">New transaction</span>
               </Button>
             </div>
           </header>
-          <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
+          <div className="flex flex-1 flex-col gap-4 px-4 md:px-8">
             {children}
           </div>
         </div>
         <ProgressiveBlur
+          height="80px"
           position="bottom"
           className="pointer-events-none absolute bottom-0 z-10 w-full"
         />
