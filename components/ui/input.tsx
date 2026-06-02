@@ -48,7 +48,8 @@ export function Input({
           className={inputClassName}
           data-slot="input"
           size={typeof size === 'number' ? size : undefined}
-          {...props}
+          {...(props as React.ComponentProps<'input'>)}
+          style={typeof props.style === 'function' ? undefined : props.style}
         />
       ) : (
         <InputPrimitive
