@@ -4,7 +4,7 @@ import { eq, desc, and, gte, lte, sql, ilike, or } from 'drizzle-orm';
 
 // ─── Types ──────────────────────────────────────────────────────
 
-const getTransactionsWithRelations = () =>
+export const getTransactionsWithRelations = () =>
   db.query.transaction.findMany({
     with: {
       category: true,
@@ -139,17 +139,15 @@ export async function getTransactionSummary(
   switch (period) {
     case 'weekly':
       startDate = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate() - 7,
+        Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() - 7),
       );
       break;
     case 'yearly':
-      startDate = new Date(now.getFullYear(), 0, 1);
+      startDate = new Date(Date.UTC(now.getFullYear(), 0, 1));
       break;
     case 'monthly':
     default:
-      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      startDate = new Date(Date.UTC(now.getFullYear(), now.getMonth(), 1));
       break;
   }
 
