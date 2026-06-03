@@ -1,43 +1,113 @@
-export default function DashboardPage() {
+import { Suspense } from 'react';
+import { getAuthenticatedUser } from '@/lib/auth.server';
+import { NetworthCard } from './_components/networth-card';
+import { AccountStackedCards } from './_components/account-stacked-cards';
+import { CashFlowCard } from './_components/cash-flow-card';
+import {
+  SpendsTrendChart,
+  SpendsTrendChartSkeleton,
+} from './_components/spends-trend-chart';
+import {
+  BudgetStatusChart,
+  BudgetStatusChartSkeleton,
+} from './_components/budget-status-chart';
+import {
+  CategorySpendsChart,
+  CategorySpendsChartSkeleton,
+} from './_components/category-spends-chart';
+import { AiInsightsCard } from './_components/ai-insights-card';
+import {
+  RecentTransactionsCard,
+  RecentTransactionsCardSkeleton,
+} from './_components/recent-transactions-card';
+import {
+  GoalsProgressChart,
+  GoalsProgressChartSkeleton,
+} from './_components/goals-progress-chart';
+import {
+  UpcomingPaymentsCard,
+  UpcomingPaymentsCardSkeleton,
+} from './_components/upcoming-payments-card';
+
+// Import data queries directly here for use in components if we were passing promises from server components
+import {
+  getSpendsTrend,
+  getCategorySpends,
+} from '@/lib/queries/analytics.queries';
+import { getBudgetStatus } from '@/lib/queries/budget.queries';
+import { getGoalsProgress } from '@/lib/queries/goal.queries';
+import { CardFrame } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+
+const CardSkeleton = () => (
+  <CardFrame className="flex h-full min-h-[160px] flex-col gap-4 p-6">
+    <Skeleton className="h-4 w-32" />
+    <Skeleton className="mt-2 h-10 w-48" />
+    <Skeleton className="mt-1 h-4 w-24" />
+  </CardFrame>
+);
+
+export default async function DashboardPage() {
+  const user = await getAuthenticatedUser();
+
+  // Kick off chart queries early to pass the promises down to the suspense boundaries
+  const spendsPromise = getSpendsTrend(user.id, 12);
+  const budgetPromise = getBudgetStatus(user.id);
+  const categoryPromise = getCategorySpends(user.id, 'monthly');
+  const goalsPromise = getGoalsProgress(user.id);
+
   return (
-    <div className="flex flex-col gap-4">
-      <div className="grid gap-4 md:grid-cols-2">
-        <div className="bg-muted/50 rounded-lg border p-4 shadow-sm">
-          <h3 className="mb-2 font-medium">Total Balance</h3>
-          <p className="text-2xl font-bold">$10,000.00</p>
-        </div>
-        <div className="bg-muted/50 rounded-lg border p-4 shadow-sm">
-          <h3 className="mb-2 font-medium">Recent Transactions</h3>
-          <p className="text-muted-foreground text-sm">View all transactions</p>
-        </div>
+    <div className="flex flex-col gap-6 pb-8">
+      {/* Header */}
+      <header className="flex flex-col gap-1 px-1">
+        <h1 className="text-3xl font-bold tracking-tight text-emerald-600 dark:text-emerald-500">
+          Dashboard
+        </h1>
+        <p className="text-muted-foreground">view summary of your finances</p>
+      </header>
+
+      {/* Top Row: 3 Columns */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <Suspense fallback={<CardSkeleton />}>
+          <NetworthCard />
+        </Suspense>
+        <Suspense fallback={<CardSkeleton />}>
+          <AccountStackedCards />
+        </Suspense>
+        <Suspense fallback={<CardSkeleton />}>
+          <CashFlowCard />
+        </Suspense>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <div className="md:col-span-2">
-          <div className="bg-muted/50 rounded-lg border p-4 shadow-sm">
-            <h3 className="mb-2 font-medium">Spending Overview</h3>
-            <div className="aspect-video w-full">Chart Placeholder</div>
-          </div>
+      {/* Main Content: 2/3 Left, 1/3 Right */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        {/* Left Column (Charts & Insights) */}
+        <div className="flex flex-col gap-4 lg:col-span-2">
+          <Suspense fallback={<SpendsTrendChartSkeleton />}>
+            <SpendsTrendChart dataPromise={spendsPromise} />
+          </Suspense>
+          <Suspense fallback={<BudgetStatusChartSkeleton />}>
+            <BudgetStatusChart dataPromise={budgetPromise} />
+          </Suspense>
+          <Suspense fallback={<CategorySpendsChartSkeleton />}>
+            <CategorySpendsChart dataPromise={categoryPromise} />
+          </Suspense>
+          <AiInsightsCard />
         </div>
 
-        <div>
-          <div className="bg-muted/50 rounded-lg border p-4 shadow-sm">
-            <h3 className="mb-2 font-medium">Categories</h3>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm">
-                <span>Groceries</span>
-                <span>$400</span>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <span>Transport</span>
-                <span>$150</span>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <span>Entertainment</span>
-                <span>$200</span>
-              </div>
-            </div>
-          </div>
+        {/* Right Column (Lists & Goals) */}
+        <div className="flex flex-col gap-4 lg:col-span-1">
+          <Suspense
+            fallback={<RecentTransactionsCardSkeleton className="flex-1" />}
+          >
+            <RecentTransactionsCard className="flex-1" />
+          </Suspense>
+          <Suspense fallback={<GoalsProgressChartSkeleton />}>
+            <GoalsProgressChart dataPromise={goalsPromise} />
+          </Suspense>
+          <Suspense fallback={<UpcomingPaymentsCardSkeleton />}>
+            <UpcomingPaymentsCard />
+          </Suspense>
         </div>
       </div>
     </div>
