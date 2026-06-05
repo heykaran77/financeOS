@@ -14,9 +14,14 @@ function AuthButtonsSkeleton() {
 }
 
 async function AuthButtons() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  let session = null;
+  try {
+    session = await auth.api.getSession({
+      headers: await headers(),
+    });
+  } catch (error) {
+    console.error('Navbar session error:', error);
+  }
   const user = session?.user;
 
   if (!user) {

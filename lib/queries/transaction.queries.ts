@@ -153,9 +153,9 @@ export async function getTransactionSummary(
 
   const result = await db
     .select({
-      totalIncome: sql<string>`COALESCE(SUM(CASE WHEN ${transaction.type} = 'income' THEN ${transaction.amount} ELSE 0 END), 0)`,
-      totalExpenses: sql<string>`COALESCE(SUM(CASE WHEN ${transaction.type} = 'expense' THEN ${transaction.amount} ELSE 0 END), 0)`,
-      totalTransfers: sql<string>`COALESCE(SUM(CASE WHEN ${transaction.type} = 'transfer' THEN ${transaction.amount} ELSE 0 END), 0)`,
+      totalIncome: sql<string>`COALESCE(SUM(CASE WHEN ${transaction.type} = 'income' THEN ${transaction.amount} ELSE 0.0 END), 0.0)`,
+      totalExpenses: sql<string>`COALESCE(SUM(CASE WHEN ${transaction.type} = 'expense' THEN ${transaction.amount} ELSE 0.0 END), 0.0)`,
+      totalTransfers: sql<string>`COALESCE(SUM(CASE WHEN ${transaction.type} = 'transfer' THEN ${transaction.amount} ELSE 0.0 END), 0.0)`,
       transactionCount: sql<number>`count(*)`,
     })
     .from(transaction)
