@@ -79,16 +79,16 @@ export default async function DashboardPage() {
 
       {/* Row 2: Spends Trend (2/3) + Recent Transactions (1/3) */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <div className="lg:col-span-2">
+        <div className="h-[400px] lg:col-span-2">
           <Suspense fallback={<SpendsTrendChartSkeleton />}>
             <SpendsTrendChart dataPromise={spendsPromise} />
           </Suspense>
         </div>
-        <div className="lg:col-span-1">
+        <div className="self-start lg:col-span-1">
           <Suspense
-            fallback={<RecentTransactionsCardSkeleton className="h-full" />}
+            fallback={<RecentTransactionsCardSkeleton className="h-[400px]" />}
           >
-            <RecentTransactionsCard userId={user.id} className="h-full" />
+            <RecentTransactionsCard userId={user.id} className="h-[400px]" />
           </Suspense>
         </div>
       </div>
@@ -111,9 +111,11 @@ export default async function DashboardPage() {
         <div className="lg:col-span-2">
           <AiInsightsCard />
         </div>
-        <div className="lg:col-span-1">
-          <Suspense fallback={<UpcomingPaymentsCardSkeleton />}>
-            <UpcomingPaymentsCard userId={user.id} />
+        <div className="self-start lg:col-span-1">
+          <Suspense
+            fallback={<UpcomingPaymentsCardSkeleton className="h-[400px]" />}
+          >
+            <UpcomingPaymentsCard userId={user.id} className="h-[400px]" />
           </Suspense>
         </div>
       </div>

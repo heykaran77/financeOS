@@ -1,6 +1,7 @@
 import { getUpcomingPayments } from '@/lib/queries/dashboard.queries';
 import { CardFrame } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { UpcomingPaymentsTable } from './upcoming-payments-table';
 
 export async function UpcomingPaymentsCard({
   userId,
@@ -11,64 +12,14 @@ export async function UpcomingPaymentsCard({
 }) {
   const payments = await getUpcomingPayments(userId, 3);
 
-  const formatDate = (date: Date) => {
-    const today = new Date();
-    const target = new Date(date);
-
-    // Check if tomorrow
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-
-    if (target.toDateString() === tomorrow.toDateString()) {
-      return 'Tomorrow';
-    }
-
-    return new Intl.DateTimeFormat('en-IN', {
-      day: 'numeric',
-      month: 'short',
-    }).format(target);
-  };
-
   return (
     <CardFrame className={`flex flex-col gap-4 p-6 ${className || ''}`}>
-      <div className="flex flex-col gap-1">
-        <h3 className="text-lg font-medium text-emerald-600 dark:text-emerald-500">
-          Upcoming payments
-        </h3>
-      </div>
+      <h3 className="font-advercase-regular text-lg text-emerald-400">
+        Upcoming payments
+      </h3>
 
-      <div className="mt-2 w-full">
-        <table className="text-foreground w-full text-left text-sm">
-          <thead className="text-muted-foreground border-b border-dashed">
-            <tr>
-              <th className="pb-2 font-mono">Due Date</th>
-              <th className="pb-2 font-mono">Bill</th>
-            </tr>
-          </thead>
-          <tbody>
-            {payments.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={2}
-                  className="text-muted-foreground py-4 text-center"
-                >
-                  No upcoming payments
-                </td>
-              </tr>
-            ) : (
-              payments.map((p) => (
-                <tr key={p.id} className="border-b border-dashed last:border-0">
-                  <td className="py-3 pr-4 whitespace-nowrap">
-                    {formatDate(p.nextDueDate)}
-                  </td>
-                  <td className="truncate py-3">
-                    {p.description || 'Subscription'}
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+      <div className="mt-1 max-h-[300px] w-full flex-1 overflow-y-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <UpcomingPaymentsTable data={payments} />
       </div>
     </CardFrame>
   );
