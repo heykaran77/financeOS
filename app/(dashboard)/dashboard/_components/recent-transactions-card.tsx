@@ -1,6 +1,7 @@
 import { getRecentTransactions } from '@/lib/queries/transaction.queries';
 import { CardFrame } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { RecentTransactionsTable } from './recent-transactions-table';
 
 export async function RecentTransactionsCard({
   userId,
@@ -27,36 +28,13 @@ export async function RecentTransactionsCard({
   return (
     <CardFrame className={`flex flex-col gap-4 p-6 ${className || ''}`}>
       <div className="flex flex-col gap-1">
-        <h3 className="text-muted-foreground text-sm font-medium">
-          recent transactions
+        <h3 className="font-advercase-regular text-lg text-emerald-400">
+          Recent activity
         </h3>
       </div>
 
-      <div className="mt-2 flex flex-col gap-4 overflow-y-auto pr-2">
-        {transactions.length === 0 ? (
-          <div className="text-muted-foreground py-8 text-center text-sm">
-            No recent transactions
-          </div>
-        ) : (
-          transactions.map((tx) => (
-            <div key={tx.id} className="flex items-center justify-between">
-              <div className="flex flex-col gap-1">
-                <span className="text-sm leading-none font-medium">
-                  {tx.description || tx.category?.name || 'Transaction'}
-                </span>
-                <span className="text-muted-foreground text-xs">
-                  {formatDate(tx.date)}
-                </span>
-              </div>
-              <div
-                className={`text-sm font-medium ${tx.type === 'expense' ? '' : 'text-emerald-500'}`}
-              >
-                {tx.type === 'expense' ? '-' : '+'}
-                {formatCurrency(tx.amount)}
-              </div>
-            </div>
-          ))
-        )}
+      <div className="mt-1 flex-1 overflow-y-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <RecentTransactionsTable data={transactions} />
       </div>
     </CardFrame>
   );
