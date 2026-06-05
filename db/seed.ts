@@ -19,7 +19,7 @@ async function seed() {
   try {
     // 1. Bank Accounts
     console.log('Inserting Bank Accounts...');
-    const [checking, savings, creditCard] = await db
+    const [checking, _savings, creditCard] = await db
       .insert(bankAccount)
       .values([
         {
@@ -98,7 +98,7 @@ async function seed() {
 
     // 4. Recurring Transactions
     console.log('Inserting Recurring Transactions...');
-    const [netflixRec, rentRec] = await db
+    const [netflixRec, _rentRec] = await db
       .insert(recurringTransaction)
       .values([
         {
@@ -126,74 +126,95 @@ async function seed() {
     // 5. Transactions
     console.log('Inserting Transactions...');
     const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(today.getDate() - 1);
+    const generatedTransactions = [];
 
-    const [t1, t2, t3, t4, t5] = await db
+    // Generate transactions for the last 6 months
+    for (let i = 0; i < 6; i++) {
+      const monthDate = new Date(today);
+      monthDate.setMonth(today.getMonth() - i);
+
+      // Salary (once a month)
+      generatedTransactions.push({
+        userId: USER_ID,
+        bankAccountId: checking.id,
+        categoryId: salaryCat.id,
+        amount: '120000.00',
+        type: 'income',
+        description: `${monthDate.toLocaleString('default', { month: 'short' })} Salary`,
+        date: new Date(monthDate.getFullYear(), monthDate.getMonth(), 1), // 1st of month
+        paymentMethod: 'net_banking',
+        source: 'Acme Corp',
+      });
+
+      // Rent (once a month)
+      generatedTransactions.push({
+        userId: USER_ID,
+        bankAccountId: checking.id,
+        amount: '25000.00',
+        type: 'expense',
+        description: 'Monthly Rent',
+        date: new Date(monthDate.getFullYear(), monthDate.getMonth(), 5),
+        paymentMethod: 'net_banking',
+      });
+
+      // Netflix (once a month)
+      generatedTransactions.push({
+        userId: USER_ID,
+        bankAccountId: creditCard.id,
+        categoryId: entertainmentCat.id,
+        amount: '649.00',
+        type: 'expense',
+        description: 'Netflix Premium',
+        date: new Date(monthDate.getFullYear(), monthDate.getMonth(), 15),
+        paymentMethod: 'card',
+        isRecurring: true,
+        recurringTransactionId: netflixRec.id,
+      });
+
+      // Random daily expenses
+      const numExpenses = 8 + Math.floor(Math.random() * 5); // 8-12 expenses per month
+      for (let j = 0; j < numExpenses; j++) {
+        const randDay = 1 + Math.floor(Math.random() * 27);
+        const tDate = new Date(
+          monthDate.getFullYear(),
+          monthDate.getMonth(),
+          randDay,
+        );
+
+        // Pick random category (food, transport, entertainment)
+        const cats = [foodCat, transportCat, entertainmentCat];
+        const cat = cats[Math.floor(Math.random() * cats.length)];
+
+        // Random amount between 200 and 5000
+        const amt = (200 + Math.random() * 4800).toFixed(2);
+
+        generatedTransactions.push({
+          userId: USER_ID,
+          bankAccountId: creditCard.id,
+          categoryId: cat.id,
+          amount: amt,
+          type: 'expense',
+          description: `${cat.name} Expense`,
+          date: tDate,
+          paymentMethod: 'card',
+        });
+      }
+    }
+
+    const insertedTxs = await db
       .insert(transaction)
-      .values([
-        {
-          userId: USER_ID,
-          bankAccountId: checking.id,
-          categoryId: salaryCat.id,
-          amount: '120000.00',
-          type: 'income',
-          description: 'May Salary',
-          date: today,
-          paymentMethod: 'net_banking',
-          source: 'Acme Corp',
-        },
-        {
-          userId: USER_ID,
-          bankAccountId: creditCard.id,
-          categoryId: foodCat.id,
-          amount: '1250.00',
-          type: 'expense',
-          description: 'Dinner at Italian Restaurant',
-          date: yesterday,
-          paymentMethod: 'card',
-        },
-        {
-          userId: USER_ID,
-          bankAccountId: checking.id,
-          categoryId: transportCat.id,
-          amount: '450.00',
-          type: 'expense',
-          description: 'Uber to office',
-          date: today,
-          paymentMethod: 'upi',
-        },
-        {
-          userId: USER_ID,
-          bankAccountId: checking.id, // Transfer out of checking
-          amount: '10000.00',
-          type: 'transfer',
-          description: 'Transfer to Savings',
-          date: today,
-          paymentMethod: 'net_banking',
-        },
-        {
-          userId: USER_ID,
-          bankAccountId: creditCard.id,
-          categoryId: entertainmentCat.id,
-          amount: '649.00',
-          type: 'expense',
-          description: 'Netflix Premium',
-          date: today,
-          paymentMethod: 'card',
-          isRecurring: true,
-          recurringTransactionId: netflixRec.id,
-        },
-      ])
+      .values(generatedTransactions as (typeof transaction.$inferInsert)[])
       .returning();
 
     // 6. Transaction Tags
     console.log('Inserting Transaction Tags...');
-    await db.insert(transactionTag).values([
-      { transactionId: t2.id, tagId: vacationTag.id },
-      { transactionId: t3.id, tagId: taxTag.id },
-      { transactionId: t5.id, tagId: subTag.id },
-    ]);
+    if (insertedTxs.length >= 4) {
+      await db.insert(transactionTag).values([
+        { transactionId: insertedTxs[1].id, tagId: vacationTag.id },
+        { transactionId: insertedTxs[2].id, tagId: taxTag.id },
+        { transactionId: insertedTxs[3].id, tagId: subTag.id },
+      ]);
+    }
 
     // 7. Budgets
     console.log('Inserting Budgets...');

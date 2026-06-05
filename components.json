@@ -23,6 +23,7 @@
     "@coss": "https://coss.com/ui/r/{name}.json",
     "@react-bits": "https://reactbits.dev/r/{name}.json",
     "@skiper-ui": "https://skiper-ui.com/registry/{name}.json",
-    "@magicui": "https://magicui.design/r/{name}"
+    "@magicui": "https://magicui.design/r/{name}",
+    "@evilcharts": "https://evilcharts.com/r/{name}.json"
   }
 }
