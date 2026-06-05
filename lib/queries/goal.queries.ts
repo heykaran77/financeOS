@@ -22,6 +22,6 @@ export async function getGoalsProgress(userId: string) {
     name: row.name,
     target: Number(row.target),
     current: Number(row.current),
-    progress: Math.min((Number(row.current) / Number(row.target)) * 100, 100),
+    progress: (Number(row.current) / Number(row.target)) * 100,
   }));
 }

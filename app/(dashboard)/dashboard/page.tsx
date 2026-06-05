@@ -38,6 +38,7 @@ import { getBudgetStatus } from '@/lib/queries/budget.queries';
 import { getGoalsProgress } from '@/lib/queries/goal.queries';
 import { CardFrame } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import SectionHeading from '@/components/common/SectionHeading';
 
 const CardSkeleton = () => (
   <CardFrame className="flex h-full min-h-[160px] flex-col gap-4 p-6">
@@ -59,54 +60,60 @@ export default async function DashboardPage() {
   return (
     <div className="flex flex-col gap-6 pb-8">
       {/* Header */}
-      <header className="flex flex-col gap-1 px-1">
-        <h1 className="text-3xl font-bold tracking-tight text-emerald-600 dark:text-emerald-500">
-          Dashboard
-        </h1>
-        <p className="text-muted-foreground">view summary of your finances</p>
-      </header>
-
+      <SectionHeading
+        heading="Dashboard"
+        subHeading="view summary of your finances"
+      />
       {/* Top Row: 3 Columns */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <Suspense fallback={<CardSkeleton />}>
-          <NetworthCard />
+          <NetworthCard userId={user.id} />
         </Suspense>
         <Suspense fallback={<CardSkeleton />}>
-          <AccountStackedCards />
+          <AccountStackedCards userId={user.id} />
         </Suspense>
         <Suspense fallback={<CardSkeleton />}>
-          <CashFlowCard />
+          <CashFlowCard userId={user.id} />
         </Suspense>
       </div>
 
-      {/* Main Content: 2/3 Left, 1/3 Right */}
+      {/* Row 2: Spends Trend (2/3) + Recent Transactions (1/3) */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        {/* Left Column (Charts & Insights) */}
-        <div className="flex flex-col gap-4 lg:col-span-2">
+        <div className="lg:col-span-2">
           <Suspense fallback={<SpendsTrendChartSkeleton />}>
             <SpendsTrendChart dataPromise={spendsPromise} />
           </Suspense>
-          <Suspense fallback={<BudgetStatusChartSkeleton />}>
-            <BudgetStatusChart dataPromise={budgetPromise} />
+        </div>
+        <div className="lg:col-span-1">
+          <Suspense
+            fallback={<RecentTransactionsCardSkeleton className="h-full" />}
+          >
+            <RecentTransactionsCard userId={user.id} className="h-full" />
           </Suspense>
-          <Suspense fallback={<CategorySpendsChartSkeleton />}>
-            <CategorySpendsChart dataPromise={categoryPromise} />
-          </Suspense>
+        </div>
+      </div>
+
+      {/* Row 3: Budget | Category Spends | Goals — side by side */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <Suspense fallback={<BudgetStatusChartSkeleton />}>
+          <BudgetStatusChart dataPromise={budgetPromise} />
+        </Suspense>
+        <Suspense fallback={<CategorySpendsChartSkeleton />}>
+          <CategorySpendsChart dataPromise={categoryPromise} />
+        </Suspense>
+        <Suspense fallback={<GoalsProgressChartSkeleton />}>
+          <GoalsProgressChart dataPromise={goalsPromise} />
+        </Suspense>
+      </div>
+
+      {/* Row 4: AI Insights (2/3) + Upcoming Payments (1/3) */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div className="lg:col-span-2">
           <AiInsightsCard />
         </div>
-
-        {/* Right Column (Lists & Goals) */}
-        <div className="flex flex-col gap-4 lg:col-span-1">
-          <Suspense
-            fallback={<RecentTransactionsCardSkeleton className="flex-1" />}
-          >
-            <RecentTransactionsCard className="flex-1" />
-          </Suspense>
-          <Suspense fallback={<GoalsProgressChartSkeleton />}>
-            <GoalsProgressChart dataPromise={goalsPromise} />
-          </Suspense>
+        <div className="lg:col-span-1">
           <Suspense fallback={<UpcomingPaymentsCardSkeleton />}>
-            <UpcomingPaymentsCard />
+            <UpcomingPaymentsCard userId={user.id} />
           </Suspense>
         </div>
       </div>

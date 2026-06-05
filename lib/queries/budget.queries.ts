@@ -45,6 +45,6 @@ export async function getBudgetStatus(userId: string) {
     color: row.color,
     limit: Number(row.limit),
     spent: Number(row.spent),
-    progress: Math.min((Number(row.spent) / Number(row.limit)) * 100, 100),
+    progress: (Number(row.spent) / Number(row.limit)) * 100,
   }));
 }
