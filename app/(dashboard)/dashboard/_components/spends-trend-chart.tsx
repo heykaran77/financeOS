@@ -85,39 +85,21 @@ export function SpendsTrendChart({
 
   return (
     <CardFrame className="flex h-full flex-col gap-4 p-6">
-      <div className="flex flex-col gap-1">
-        <h3 className="text-muted-foreground text-sm font-medium">
-          monthly/ yearly/ weekly spends
-        </h3>
-        <p className="text-2xl font-bold tracking-tight">
-          <NumberFlow
-            value={total}
-            format={{
-              style: 'currency',
-              currency: 'INR',
-              maximumFractionDigits: 0,
-            }}
-          />
-        </p>
-      </div>
-
-      <div className="mt-4 flex min-h-[250px] flex-1 flex-col">
-        <div className="mb-4 flex items-end justify-between px-2">
-          <div className="space-y-1">
-            <p className="text-muted-foreground font-mono text-xs">
-              {'[spent] Value'}
-            </p>
-            <p className="text-primary font-mono text-3xl tracking-tighter">
-              <NumberFlow
-                value={selectedData.value}
-                format={{
-                  style: 'currency',
-                  currency: 'INR',
-                  maximumFractionDigits: 0,
-                }}
-              />
-            </p>
-          </div>
+      <h3 className="font-advercase-regular text-lg text-emerald-400">
+        Monthly spends
+      </h3>
+      <div className="flex min-h-[200px] flex-1 flex-col">
+        <div className="mb-4 flex items-end justify-between">
+          <p className="text-primary text-3xl font-semibold tracking-tighter">
+            <NumberFlow
+              value={selectedData.value}
+              format={{
+                style: 'currency',
+                currency: 'INR',
+                maximumFractionDigits: 0,
+              }}
+            />
+          </p>
 
           <div className="space-y-1 text-right">
             <p className="text-muted-foreground font-mono text-[10px]">
@@ -260,7 +242,7 @@ export function SpendsTrendChartSkeleton() {
         <Skeleton className="h-4 w-48" />
         <Skeleton className="mt-1 h-8 w-32" />
       </div>
-      <div className="mt-4 flex h-[250px] w-full items-end justify-between gap-2">
+      <div className="flex h-[200px] w-full items-end justify-between gap-2">
         {[40, 60, 30, 80, 50, 70, 90, 45, 65, 85, 55, 75].map((h, i) => (
           <Skeleton
             key={i}

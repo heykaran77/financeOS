@@ -8,7 +8,16 @@ import {
   Tooltip,
   Legend,
 } from '@/components/evilcharts/charts/radial-chart';
+import { PolarAngleAxis } from 'recharts';
 import { ChartConfig } from '@/components/evilcharts/ui/chart';
+
+// Converts a display name to a CSS-safe slug for use in CSS custom properties
+function sanitizeKey(name: string) {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+}
 
 type BudgetData = {
   id: string;
@@ -29,8 +38,9 @@ export function BudgetStatusChart({
   const chartConfig = useMemo(() => {
     const config: ChartConfig = {};
     data.forEach((budget) => {
-      config[budget.category] = {
-        label: budget.category,
+      const key = sanitizeKey(budget.category);
+      config[key] = {
+        label: `${budget.category} (${Math.round(budget.progress)}%)`,
         colors: {
           light: [budget.color || '#10b981'],
           dark: [budget.color || '#10b981'],
@@ -42,24 +52,22 @@ export function BudgetStatusChart({
 
   const chartData = useMemo(() => {
     return data.map((b) => ({
-      name: b.category,
-      value: b.spent,
-      fill: `var(--color-${b.category}-0)`,
-      // We could pass limit here if EvilRadialChart supports a max value per bar,
-      // but usually radial bars expect a single metric.
-      // The wireframe shows concentric circles.
+      name: sanitizeKey(b.category),
+      // Visually cap at 100 so the ring doesn't overlap itself, but the label shows the real >100% value
+      value: Math.min(b.progress, 100),
+      fill: `var(--color-${sanitizeKey(b.category)}-0)`,
     }));
   }, [data]);
 
   return (
-    <CardFrame className="flex h-full flex-col gap-4 p-6">
+    <CardFrame className="flex h-full flex-col gap-2 p-5">
       <div className="flex flex-col gap-1">
         <h3 className="text-muted-foreground text-sm font-medium">
           Monthly budget status
         </h3>
       </div>
 
-      <div className="mt-4 min-h-[250px] w-full flex-1">
+      <div className="min-h-[200px] w-full flex-1">
         {data.length === 0 ? (
           <div className="text-muted-foreground flex h-full items-center justify-center text-sm">
             No active budgets
@@ -69,13 +77,24 @@ export function BudgetStatusChart({
             data={chartData}
             config={chartConfig}
             className="h-full w-full"
-            innerRadius="30%"
+            innerRadius="60%"
             outerRadius="100%"
             nameKey="name"
           >
+            <PolarAngleAxis
+              type="number"
+              domain={[0, 100]}
+              angleAxisId={0}
+              tick={false}
+            />
             <Tooltip />
             <Legend />
-            <RadialBar dataKey="value" showBackground cornerRadius={10} />
+            <RadialBar
+              dataKey="value"
+              showBackground
+              cornerRadius={10}
+              barSize={14}
+            />
           </EvilRadialChart>
         )}
       </div>
@@ -85,13 +104,13 @@ export function BudgetStatusChart({
 
 export function BudgetStatusChartSkeleton() {
   return (
-    <CardFrame className="flex h-full flex-col gap-4 p-6">
+    <CardFrame className="flex h-full flex-col gap-2 p-5">
       <div className="flex flex-col gap-1">
         <h3 className="text-muted-foreground text-sm font-medium">
           Monthly budget status
         </h3>
       </div>
-      <div className="mt-4 min-h-[250px] w-full flex-1">
+      <div className="min-h-[200px] w-full flex-1">
         {/* We use the EvilRadialChart's native isLoading state */}
         <EvilRadialChart
           isLoading

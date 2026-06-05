@@ -1,11 +1,9 @@
 import { getTotalBalance } from '@/lib/queries/account.queries';
 import { CardFrame } from '@/components/ui/card';
-import { getAuthenticatedUser } from '@/lib/auth.server';
 import { AnimatedNumber as NumberFlow } from '@/components/ui/animated-number';
 
-export async function NetworthCard() {
-  const user = await getAuthenticatedUser();
-  const totalBalance = await getTotalBalance(user.id);
+export async function NetworthCard({ userId }: { userId: string }) {
+  const totalBalance = await getTotalBalance(userId);
 
   // Convert INR to USD as per wireframe (~$1900 for 160000 INR)
   // This is a naive static conversion for MVP, assuming base is INR

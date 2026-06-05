@@ -1,11 +1,9 @@
 import { getTransactionSummary } from '@/lib/queries/transaction.queries';
 import { CardFrame } from '@/components/ui/card';
-import { getAuthenticatedUser } from '@/lib/auth.server';
 import { AnimatedNumber as NumberFlow } from '@/components/ui/animated-number';
 
-export async function CashFlowCard() {
-  const user = await getAuthenticatedUser();
-  const summary = await getTransactionSummary(user.id, 'monthly');
+export async function CashFlowCard({ userId }: { userId: string }) {
+  const summary = await getTransactionSummary(userId, 'monthly');
 
   const savedPercentage =
     summary.totalIncome > 0
@@ -21,7 +19,9 @@ export async function CashFlowCard() {
   return (
     <CardFrame className="flex h-full flex-col justify-between gap-4 p-6">
       <div>
-        <h3 className="text-muted-foreground text-sm font-medium">Cash flow</h3>
+        <h3 className="font-advercase-regular text-lg text-emerald-400">
+          Cashflow
+        </h3>
         <div className="mt-2 flex items-baseline gap-2">
           <div className="flex items-center text-4xl font-bold tracking-tight">
             {summary.net > 0 ? '+' : ''}

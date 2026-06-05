@@ -1,15 +1,15 @@
 import { getRecentTransactions } from '@/lib/queries/transaction.queries';
-import { getAuthenticatedUser } from '@/lib/auth.server';
 import { CardFrame } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export async function RecentTransactionsCard({
+  userId,
   className,
 }: {
+  userId: string;
   className?: string;
 }) {
-  const user = await getAuthenticatedUser();
-  const transactions = await getRecentTransactions(user.id, 10);
+  const transactions = await getRecentTransactions(userId, 10);
 
   const formatCurrency = (val: string | number) =>
     new Intl.NumberFormat('en-IN', {

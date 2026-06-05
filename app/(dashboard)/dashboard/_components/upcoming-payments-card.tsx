@@ -1,15 +1,15 @@
 import { getUpcomingPayments } from '@/lib/queries/dashboard.queries';
-import { getAuthenticatedUser } from '@/lib/auth.server';
 import { CardFrame } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export async function UpcomingPaymentsCard({
+  userId,
   className,
 }: {
+  userId: string;
   className?: string;
 }) {
-  const user = await getAuthenticatedUser();
-  const payments = await getUpcomingPayments(user.id, 3);
+  const payments = await getUpcomingPayments(userId, 3);
 
   const formatDate = (date: Date) => {
     const today = new Date();
