@@ -7,6 +7,7 @@ import { CardFrame } from '@/components/ui/card';
 
 export function AccountCardStack({ accounts }: { accounts: BankAccountRow[] }) {
   const [cards, setCards] = useState(accounts);
+  const [isHovered, setIsHovered] = useState(false);
 
   const moveToEnd = () => {
     setCards((prevCards) => {
@@ -28,8 +29,9 @@ export function AccountCardStack({ accounts }: { accounts: BankAccountRow[] }) {
 
   return (
     <div
-      className="perspective-1000 relative h-full min-h-[160px] w-full cursor-pointer"
-      onClick={moveToEnd}
+      className="perspective-1000 relative h-full min-h-[160px] w-full"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <AnimatePresence mode="popLayout">
         {cards.map((account, index) => {
@@ -38,22 +40,41 @@ export function AccountCardStack({ accounts }: { accounts: BankAccountRow[] }) {
             <motion.div
               key={account.id}
               layout
-              initial={{ opacity: 0, y: -20, scale: 0.9 }}
+              initial={{ opacity: 0, filter: 'blur(10px)' }}
               animate={{
-                opacity: 1 - index * 0.2,
-                y: index * 12,
-                scale: 1 - index * 0.05,
+                opacity: 1,
+                filter: index > 0 ? 'blur(3px)' : 'blur(0px)',
+                y: isHovered ? index * 8 : 0,
+                scale: 1 - index * 0.04,
                 zIndex: cards.length - index,
               }}
-              exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.2 } }}
-              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-              className="absolute inset-0"
+              exit={{
+                opacity: 0,
+                filter: 'blur(10px)',
+                y: 20,
+                scale: 0.9,
+                transition: { duration: 0.2 },
+              }}
+              transition={{
+                type: 'spring',
+                stiffness: 250,
+                damping: 25,
+                mass: 0.8,
+              }}
+              className="absolute inset-0 cursor-grab active:cursor-grabbing"
               style={{ transformOrigin: 'top center' }}
+              drag={isTop ? true : false}
+              dragConstraints={{ top: 0, bottom: 0, left: 0, right: 0 }}
+              dragElastic={0.8}
+              onDragEnd={(e, { offset }) => {
+                // If dragged more than 50px in any direction, swap the card
+                if (Math.abs(offset.x) > 50 || Math.abs(offset.y) > 50) {
+                  moveToEnd();
+                }
+              }}
             >
               <CardFrame
-                className={`flex h-full flex-col justify-between gap-4 border p-6 shadow-md transition-colors ${
-                  isTop ? 'bg-card' : 'bg-muted/80'
-                }`}
+                className="bg-card flex h-full flex-col justify-between gap-4 border p-6 shadow-md"
                 style={{
                   borderTop: isTop
                     ? `4px solid ${account.color || 'var(--color-emerald-500)'}`
@@ -61,15 +82,15 @@ export function AccountCardStack({ accounts }: { accounts: BankAccountRow[] }) {
                 }}
               >
                 <div className="flex items-start justify-between">
-                  <h3 className="text-muted-foreground text-sm font-medium">
-                    Total balance ({account.name})
+                  <h3 className="font-advercase-regular text-lg text-emerald-400">
+                    {account.name}
                   </h3>
                   <div className="text-muted-foreground/60 font-mono text-xs">
                     {account.type.toUpperCase()}
                   </div>
                 </div>
 
-                <div className="text-foreground mt-2 text-4xl font-bold tracking-tight">
+                <div className="mt-2 text-4xl font-bold tracking-tight text-red-500">
                   {formatCurrency(account.balance, account.currency)}
                 </div>
 
