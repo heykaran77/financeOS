@@ -54,18 +54,16 @@ export function BudgetStatusChart({
     return data.map((b) => ({
       name: sanitizeKey(b.category),
       // Visually cap at 100 so the ring doesn't overlap itself, but the label shows the real >100% value
-      value: Math.min(b.progress, 100),
+      value: b.spent,
       fill: `var(--color-${sanitizeKey(b.category)}-0)`,
     }));
   }, [data]);
 
   return (
     <CardFrame className="flex h-full flex-col gap-2 p-5">
-      <div className="flex flex-col gap-1">
-        <h3 className="text-muted-foreground text-sm font-medium">
-          Monthly budget status
-        </h3>
-      </div>
+      <h3 className="font-advercase-regular text-lg text-emerald-400">
+        Budget status
+      </h3>
 
       <div className="min-h-[200px] w-full flex-1">
         {data.length === 0 ? (
@@ -77,7 +75,7 @@ export function BudgetStatusChart({
             data={chartData}
             config={chartConfig}
             className="h-full w-full"
-            innerRadius="60%"
+            innerRadius="50%"
             outerRadius="100%"
             nameKey="name"
           >
@@ -88,13 +86,8 @@ export function BudgetStatusChart({
               tick={false}
             />
             <Tooltip />
-            <Legend />
-            <RadialBar
-              dataKey="value"
-              showBackground
-              cornerRadius={10}
-              barSize={14}
-            />
+            <Legend isClickable />
+            <RadialBar dataKey="value" showBackground isClickable />
           </EvilRadialChart>
         )}
       </div>

@@ -55,16 +55,16 @@ export function GoalsProgressChart({
   const chartData = useMemo(() => {
     return data.map((g) => ({
       name: sanitizeKey(g.name),
-      value: Math.min(g.progress, 100),
+      value: g.current,
       fill: `var(--color-${sanitizeKey(g.name)}-0)`,
     }));
   }, [data]);
 
   return (
-    <CardFrame className="flex h-full flex-col gap-2 p-5">
+    <CardFrame className="flex h-full flex-col gap-1 p-5">
       <div className="flex flex-col gap-1">
-        <h3 className="text-muted-foreground text-sm font-medium">
-          Goals reached progress (%)
+        <h3 className="font-advercase-regular text-lg text-emerald-400">
+          Goals Progress
         </h3>
       </div>
 
@@ -78,7 +78,7 @@ export function GoalsProgressChart({
             data={chartData}
             config={chartConfig}
             className="h-full w-full"
-            innerRadius="60%"
+            innerRadius="50%"
             outerRadius="100%"
             nameKey="name"
           >
@@ -89,13 +89,8 @@ export function GoalsProgressChart({
               tick={false}
             />
             <Tooltip />
-            <Legend />
-            <RadialBar
-              dataKey="value"
-              showBackground
-              cornerRadius={10}
-              barSize={14}
-            />
+            <Legend isClickable />
+            <RadialBar dataKey="value" showBackground isClickable />
           </EvilRadialChart>
         )}
       </div>

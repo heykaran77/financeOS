@@ -56,12 +56,9 @@ export function CategorySpendsChart({
 
   return (
     <CardFrame className="flex h-full flex-col gap-2 p-5">
-      <div className="flex flex-col gap-1">
-        <h3 className="text-muted-foreground text-sm font-medium">
-          spends by category
-        </h3>
-      </div>
-
+      <h3 className="font-advercase-regular text-lg text-emerald-400">
+        Spends by Category
+      </h3>
       <div className="min-h-[200px] w-full flex-1">
         {data.length === 0 ? (
           <div className="text-muted-foreground flex h-full items-center justify-center text-sm">
@@ -76,8 +73,8 @@ export function CategorySpendsChart({
             nameKey="name"
           >
             <Tooltip />
-            <Legend />
-            <Pie />
+            <Legend isClickable />
+            <Pie isClickable />
           </EvilPieChart>
         )}
       </div>

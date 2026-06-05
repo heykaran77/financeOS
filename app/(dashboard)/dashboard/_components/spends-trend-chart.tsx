@@ -90,7 +90,7 @@ export function SpendsTrendChart({
       </h3>
       <div className="flex min-h-[200px] flex-1 flex-col">
         <div className="mb-4 flex items-end justify-between">
-          <p className="text-primary text-3xl font-semibold tracking-tighter">
+          <p className="text-primary text-3xl font-bold tracking-tighter">
             <NumberFlow
               value={selectedData.value}
               format={{

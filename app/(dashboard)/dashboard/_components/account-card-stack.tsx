@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BankAccountRow } from '@/lib/queries/account.queries';
 import { CardFrame } from '@/components/ui/card';
+import { AnimatedNumber as NumberFlow } from '@/components/ui/animated-number';
 
 export function AccountCardStack({ accounts }: { accounts: BankAccountRow[] }) {
   const [cards, setCards] = useState(accounts);
@@ -19,13 +20,6 @@ export function AccountCardStack({ accounts }: { accounts: BankAccountRow[] }) {
       return newCards;
     });
   };
-
-  const formatCurrency = (val: string | number, currency: string) =>
-    new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: currency || 'INR',
-      maximumFractionDigits: 0,
-    }).format(Number(val));
 
   return (
     <div
@@ -73,15 +67,8 @@ export function AccountCardStack({ accounts }: { accounts: BankAccountRow[] }) {
                 }
               }}
             >
-              <CardFrame
-                className="bg-card flex h-full flex-col justify-between gap-4 border p-6 shadow-md"
-                style={{
-                  borderTop: isTop
-                    ? `4px solid ${account.color || 'var(--color-emerald-500)'}`
-                    : undefined,
-                }}
-              >
-                <div className="flex items-start justify-between">
+              <CardFrame className="bg-card flex h-full flex-col justify-between gap-4 border p-6 shadow-md">
+                <div className="flex items-center justify-between">
                   <h3 className="font-advercase-regular text-lg text-emerald-400">
                     {account.name}
                   </h3>
@@ -90,8 +77,17 @@ export function AccountCardStack({ accounts }: { accounts: BankAccountRow[] }) {
                   </div>
                 </div>
 
-                <div className="mt-2 text-4xl font-bold tracking-tight text-red-500">
-                  {formatCurrency(account.balance, account.currency)}
+                <div className="mt-2 text-4xl font-bold tracking-tight">
+                  <NumberFlow
+                    key={isTop ? 'active' : 'inactive'}
+                    value={Number(account.balance)}
+                    locales="en-IN"
+                    format={{
+                      style: 'currency',
+                      currency: account.currency || 'INR',
+                      maximumFractionDigits: 0,
+                    }}
+                  />
                 </div>
 
                 <div className="mt-1 flex items-center gap-2">
