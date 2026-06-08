@@ -55,7 +55,7 @@ export function GoalsProgressChart({
   const chartData = useMemo(() => {
     return data.map((g) => ({
       name: sanitizeKey(g.name),
-      value: g.current,
+      value: Math.round(Math.min(g.progress, 100)),
       fill: `var(--color-${sanitizeKey(g.name)}-0)`,
     }));
   }, [data]);

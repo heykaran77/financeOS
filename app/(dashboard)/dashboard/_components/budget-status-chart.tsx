@@ -54,7 +54,7 @@ export function BudgetStatusChart({
     return data.map((b) => ({
       name: sanitizeKey(b.category),
       // Visually cap at 100 so the ring doesn't overlap itself, but the label shows the real >100% value
-      value: b.spent,
+      value: Math.round(Math.min(b.progress, 100)),
       fill: `var(--color-${sanitizeKey(b.category)}-0)`,
     }));
   }, [data]);
