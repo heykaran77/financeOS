@@ -53,7 +53,11 @@ function ChartLegendContent({
       )}
     >
       {payload
-        .filter((item) => item.type !== 'none')
+        .filter(
+          (item) =>
+            item.type !== 'none' &&
+            !(item.payload as { isAnchor?: boolean })?.isAnchor,
+        )
         .map((item) => {
           // For pie charts, item.value contains the sector name (e.g., "chrome")
           // For radial charts, the name is in item.payload[nameKey]

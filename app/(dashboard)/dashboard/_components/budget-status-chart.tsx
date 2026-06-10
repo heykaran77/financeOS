@@ -51,16 +51,16 @@ export function BudgetStatusChart({
   }, [data]);
 
   const chartData = useMemo(() => {
-    return data.map((b) => ({
+    const realData = data.map((b) => ({
       name: sanitizeKey(b.category),
-      // Visually cap at 100 so the ring doesn't overlap itself, but the label shows the real >100% value
       value: Math.round(Math.min(b.progress, 100)),
       fill: `var(--color-${sanitizeKey(b.category)}-0)`,
     }));
+    return realData;
   }, [data]);
 
   return (
-    <CardFrame className="flex h-full flex-col gap-2 p-5">
+    <CardFrame className="flex h-full flex-col p-5">
       <h3 className="font-advercase-regular text-lg text-emerald-400">
         Budget status
       </h3>

@@ -28,9 +28,9 @@ import { MoreVertical, Pencil, Trash2, Pause, Play } from 'lucide-react';
 
 function getMeterColor(progress: number, isActive: boolean): string {
   if (!isActive) return 'var(--color-neutral-400)';
-  if (progress > 100) return 'var(--color-red-500)';
-  if (progress >= 75) return 'var(--color-amber-500)';
-  return 'var(--color-emerald-500)';
+  if (progress > 100) return 'var(--color-red-400)';
+  if (progress >= 75) return 'var(--color-amber-400)';
+  return 'var(--color-emerald-400)';
 }
 
 function getStatusInfo(

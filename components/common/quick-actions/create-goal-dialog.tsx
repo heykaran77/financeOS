@@ -17,61 +17,45 @@ import {
 } from '@/components/ui/dialog';
 import { Field, FieldLabel, FieldError } from '@/components/ui/field';
 import { Form } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import {
   InputGroup,
   InputGroupInput,
   InputGroupText,
 } from '@/components/ui/input-group';
-import {
-  Select,
-  SelectItem,
-  SelectPopup,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { createBudget } from '@/actions/budget';
-import type { CategoryItem } from '@/lib/queries/budget.queries';
+import { createGoal } from '@/actions/goal';
 import { Plus } from 'lucide-react';
-import { CATEGORY_ICONS } from '@/lib/icons';
-
-const periodItems = [
-  { label: 'Monthly', value: 'monthly' },
-  { label: 'Weekly', value: 'weekly' },
-  { label: 'Yearly', value: 'yearly' },
-];
 
 const formSchema = z.object({
-  categoryId: z.string().min(1, 'Please select a category'),
-  amount: z
+  name: z.string().min(1, 'Name is required'),
+  description: z.string().optional(),
+  targetAmount: z
     .string()
-    .min(1, 'Amount is required')
+    .min(1, 'Target amount is required')
     .refine(
       (val) => !isNaN(Number(val)) && Number(val) > 0,
-      'Amount must be a positive number',
+      'Target amount must be a positive number',
     ),
-  period: z.string().min(1, 'Please select a period'),
+  targetDate: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-interface CreateBudgetDialogProps {
-  categories: CategoryItem[];
+interface CreateGoalDialogProps {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-  /** If true, renders with its own trigger button */
   withTrigger?: boolean;
-  /** Custom trigger element */
   trigger?: React.ReactNode;
 }
 
-export function CreateBudgetDialog({
-  categories,
+export function CreateGoalDialog({
   open,
   onOpenChange,
   withTrigger = false,
   trigger,
-}: CreateBudgetDialogProps) {
+}: CreateGoalDialogProps) {
   const [isPending, startTransition] = useTransition();
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -93,29 +77,24 @@ export function CreateBudgetDialog({
   const { control, handleSubmit, reset } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      categoryId: '',
-      amount: '',
-      period: 'monthly',
+      name: '',
+      description: '',
+      targetAmount: '',
+      targetDate: '',
     },
   });
-
-  const categoryItems = categories.map((c) => ({
-    label: c.name,
-    value: c.id,
-    icon: c.icon,
-    color: c.color,
-  }));
 
   const onSubmit = handleSubmit((data) => {
     setServerError(null);
 
     const formData = new FormData();
-    formData.set('categoryId', data.categoryId);
-    formData.set('amount', data.amount.toString());
-    formData.set('period', data.period);
+    formData.set('name', data.name);
+    if (data.description) formData.set('description', data.description);
+    formData.set('targetAmount', data.targetAmount);
+    if (data.targetDate) formData.set('targetDate', data.targetDate);
 
     startTransition(async () => {
-      const result = await createBudget(formData);
+      const result = await createGoal(formData);
       if (result.success) {
         handleOpenChange(false);
         reset();
@@ -128,54 +107,21 @@ export function CreateBudgetDialog({
   const dialogContent = (
     <DialogPopup className="sm:max-w-md">
       <DialogHeader>
-        <DialogTitle>Create Budget</DialogTitle>
+        <DialogTitle>Create Goal</DialogTitle>
         <DialogDescription>
-          Set a spending limit for a category to track your expenses.
+          Set a new financial objective, like an emergency fund or saving for a
+          vacation.
         </DialogDescription>
       </DialogHeader>
       <Form className="contents" onSubmit={onSubmit}>
         <DialogPanel className="grid gap-4">
           <Controller
             control={control}
-            name="categoryId"
+            name="name"
             render={({ field, fieldState }) => (
               <Field>
-                <FieldLabel>Category</FieldLabel>
-                <Select
-                  items={categoryItems}
-                  value={field.value}
-                  onValueChange={(val) => field.onChange(val || '')}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a category" />
-                  </SelectTrigger>
-                  <SelectPopup>
-                    {categoryItems.map((item) => (
-                      <SelectItem key={item.value} value={item.value}>
-                        <span className="flex items-center gap-2">
-                          {item.color && (
-                            <span
-                              className="size-2.5 rounded-full"
-                              style={{ backgroundColor: item.color }}
-                            />
-                          )}
-                          {item.icon &&
-                            CATEGORY_ICONS[item.icon] &&
-                            (() => {
-                              const Icon = CATEGORY_ICONS[item.icon];
-                              return (
-                                <Icon
-                                  className="size-4"
-                                  style={{ color: item.color ?? 'inherit' }}
-                                />
-                              );
-                            })()}
-                          {item.label}
-                        </span>
-                      </SelectItem>
-                    ))}
-                  </SelectPopup>
-                </Select>
+                <FieldLabel>Name</FieldLabel>
+                <Input {...field} type="text" placeholder="e.g. New Car" />
                 {fieldState.error && (
                   <FieldError>{fieldState.error.message}</FieldError>
                 )}
@@ -185,16 +131,34 @@ export function CreateBudgetDialog({
 
           <Controller
             control={control}
-            name="amount"
+            name="description"
             render={({ field, fieldState }) => (
               <Field>
-                <FieldLabel>Budget Amount</FieldLabel>
+                <FieldLabel>Description (optional)</FieldLabel>
+                <Textarea
+                  {...field}
+                  placeholder="What is this goal for?"
+                  rows={2}
+                />
+                {fieldState.error && (
+                  <FieldError>{fieldState.error.message}</FieldError>
+                )}
+              </Field>
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="targetAmount"
+            render={({ field, fieldState }) => (
+              <Field>
+                <FieldLabel>Target Amount</FieldLabel>
                 <InputGroup className="px-2">
                   <InputGroupText>₹</InputGroupText>
                   <InputGroupInput
                     {...field}
                     type="number"
-                    placeholder="10,000"
+                    placeholder="100,000"
                     min="1"
                     step="0.01"
                   />
@@ -208,26 +172,11 @@ export function CreateBudgetDialog({
 
           <Controller
             control={control}
-            name="period"
+            name="targetDate"
             render={({ field, fieldState }) => (
               <Field>
-                <FieldLabel>Period</FieldLabel>
-                <Select
-                  items={periodItems}
-                  value={field.value}
-                  onValueChange={(val) => field.onChange(val || 'monthly')}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select period" />
-                  </SelectTrigger>
-                  <SelectPopup>
-                    {periodItems.map((item) => (
-                      <SelectItem key={item.value} value={item.value}>
-                        {item.label}
-                      </SelectItem>
-                    ))}
-                  </SelectPopup>
-                </Select>
+                <FieldLabel>Target Date (optional)</FieldLabel>
+                <Input {...field} type="date" />
                 {fieldState.error && (
                   <FieldError>{fieldState.error.message}</FieldError>
                 )}
@@ -240,7 +189,7 @@ export function CreateBudgetDialog({
         <DialogFooter>
           <DialogClose render={<Button variant="ghost" />}>Cancel</DialogClose>
           <Button type="submit" loading={isPending}>
-            Create Budget
+            Create Goal
           </Button>
         </DialogFooter>
       </Form>
@@ -252,7 +201,7 @@ export function CreateBudgetDialog({
       <Dialog open={isOpen} onOpenChange={handleOpenChange}>
         {trigger ? (
           <DialogTrigger render={trigger as React.ReactElement}>
-            Create Budget
+            Create Goal
           </DialogTrigger>
         ) : (
           <DialogTrigger
@@ -261,7 +210,7 @@ export function CreateBudgetDialog({
             }
           >
             <Plus className="mr-1 -ml-1 size-5" />
-            Create Budget
+            Create Goal
           </DialogTrigger>
         )}
         {dialogContent}

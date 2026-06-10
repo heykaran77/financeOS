@@ -53,20 +53,19 @@ export function GoalsProgressChart({
   }, [data]);
 
   const chartData = useMemo(() => {
-    return data.map((g) => ({
+    const realData = data.map((g) => ({
       name: sanitizeKey(g.name),
       value: Math.round(Math.min(g.progress, 100)),
       fill: `var(--color-${sanitizeKey(g.name)}-0)`,
     }));
+    return realData;
   }, [data]);
 
   return (
     <CardFrame className="flex h-full flex-col gap-1 p-5">
-      <div className="flex flex-col gap-1">
-        <h3 className="font-advercase-regular text-lg text-emerald-400">
-          Goals Progress
-        </h3>
-      </div>
+      <h3 className="font-advercase-regular text-lg text-emerald-400">
+        Goals Progress
+      </h3>
 
       <div className="min-h-[200px] w-full flex-1">
         {data.length === 0 ? (
