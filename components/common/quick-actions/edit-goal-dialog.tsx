@@ -1,6 +1,6 @@
 'use client';
 
-import { useTransition, useState } from 'react';
+import { useTransition, useState, useEffect } from 'react';
 import { z } from 'zod';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -16,53 +16,43 @@ import {
 } from '@/components/ui/dialog';
 import { Field, FieldLabel, FieldError } from '@/components/ui/field';
 import { Form } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import {
   InputGroup,
   InputGroupInput,
   InputGroupText,
 } from '@/components/ui/input-group';
-import {
-  Select,
-  SelectItem,
-  SelectPopup,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { updateBudget } from '@/actions/budget';
-import type { BudgetItem } from '@/lib/queries/budget.queries';
-import { CATEGORY_ICONS } from '@/lib/icons';
-
-const periodItems = [
-  { label: 'Monthly', value: 'monthly' },
-  { label: 'Weekly', value: 'weekly' },
-  { label: 'Yearly', value: 'yearly' },
-];
+import { updateGoal } from '@/actions/goal';
+import type { GoalItem } from '@/lib/queries/goal.queries';
 
 const formSchema = z.object({
-  amount: z
+  name: z.string().min(1, 'Name is required'),
+  description: z.string().optional(),
+  targetAmount: z
     .string()
-    .min(1, 'Amount is required')
+    .min(1, 'Target amount is required')
     .refine(
       (val) => !isNaN(Number(val)) && Number(val) > 0,
-      'Amount must be a positive number',
+      'Target amount must be a positive number',
     ),
-  period: z.string().min(1, 'Please select a period'),
+  targetDate: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-interface EditBudgetDialogProps {
-  budget: BudgetItem;
+interface EditGoalDialogProps {
+  goal: GoalItem;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-export function EditBudgetDialog({
-  budget: budgetData,
+export function EditGoalDialog({
+  goal: goalData,
   open,
   onOpenChange,
-}: EditBudgetDialogProps) {
+}: EditGoalDialogProps) {
   const [isPending, startTransition] = useTransition();
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -76,23 +66,42 @@ export function EditBudgetDialog({
   const { control, handleSubmit, reset } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      amount: String(budgetData.limit),
-      period: budgetData.period,
+      name: goalData.name,
+      description: goalData.description || '',
+      targetAmount: String(goalData.target),
+      targetDate: goalData.targetDate
+        ? goalData.targetDate.toISOString().split('T')[0]
+        : '',
     },
   });
+
+  // Sync default values if goalData updates while closed
+  useEffect(() => {
+    if (open) {
+      reset({
+        name: goalData.name,
+        description: goalData.description || '',
+        targetAmount: String(goalData.target),
+        targetDate: goalData.targetDate
+          ? goalData.targetDate.toISOString().split('T')[0]
+          : '',
+      });
+    }
+  }, [open, goalData, reset]);
 
   const onSubmit = handleSubmit((data) => {
     setServerError(null);
 
     const formData = new FormData();
-    formData.set('amount', data.amount.toString());
-    formData.set('period', data.period);
+    formData.set('name', data.name);
+    if (data.description) formData.set('description', data.description);
+    formData.set('targetAmount', data.targetAmount);
+    if (data.targetDate) formData.set('targetDate', data.targetDate);
 
     startTransition(async () => {
-      const result = await updateBudget(budgetData.id, formData);
+      const result = await updateGoal(goalData.id, formData);
       if (result.success) {
         handleOpenChange(false);
-        reset();
       } else {
         setServerError(result.message);
       }
@@ -103,44 +112,47 @@ export function EditBudgetDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogPopup className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Edit Budget</DialogTitle>
+          <DialogTitle>Edit Goal</DialogTitle>
           <DialogDescription>
-            Update the spending limit for{' '}
-            <span className="font-semibold">{budgetData.category}</span>.
+            Update the details for your financial goal.
           </DialogDescription>
         </DialogHeader>
         <Form className="contents" onSubmit={onSubmit}>
           <DialogPanel className="grid gap-4">
-            <Field>
-              <FieldLabel>Category</FieldLabel>
-              <div className="flex items-center gap-2 rounded-md border px-3 py-2 text-sm opacity-60">
-                {budgetData.color && (
-                  <span
-                    className="size-2.5 rounded-full"
-                    style={{ backgroundColor: budgetData.color ?? undefined }}
-                  />
-                )}
-                {budgetData.categoryIcon &&
-                  CATEGORY_ICONS[budgetData.categoryIcon] &&
-                  (() => {
-                    const Icon = CATEGORY_ICONS[budgetData.categoryIcon];
-                    return (
-                      <Icon
-                        className="size-4"
-                        style={{ color: budgetData.color ?? 'inherit' }}
-                      />
-                    );
-                  })()}
-                {budgetData.category}
-              </div>
-            </Field>
+            <Controller
+              control={control}
+              name="name"
+              render={({ field, fieldState }) => (
+                <Field>
+                  <FieldLabel>Name</FieldLabel>
+                  <Input {...field} type="text" />
+                  {fieldState.error && (
+                    <FieldError>{fieldState.error.message}</FieldError>
+                  )}
+                </Field>
+              )}
+            />
 
             <Controller
               control={control}
-              name="amount"
+              name="description"
               render={({ field, fieldState }) => (
                 <Field>
-                  <FieldLabel>Budget Amount</FieldLabel>
+                  <FieldLabel>Description (optional)</FieldLabel>
+                  <Textarea {...field} rows={2} />
+                  {fieldState.error && (
+                    <FieldError>{fieldState.error.message}</FieldError>
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              control={control}
+              name="targetAmount"
+              render={({ field, fieldState }) => (
+                <Field>
+                  <FieldLabel>Target Amount</FieldLabel>
                   <InputGroup className="px-2">
                     <InputGroupText>₹</InputGroupText>
                     <InputGroupInput
@@ -159,28 +171,11 @@ export function EditBudgetDialog({
 
             <Controller
               control={control}
-              name="period"
+              name="targetDate"
               render={({ field, fieldState }) => (
                 <Field>
-                  <FieldLabel>Period</FieldLabel>
-                  <Select
-                    items={periodItems}
-                    value={field.value}
-                    onValueChange={(val) =>
-                      field.onChange(val || budgetData.period)
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select period" />
-                    </SelectTrigger>
-                    <SelectPopup>
-                      {periodItems.map((item) => (
-                        <SelectItem key={item.value} value={item.value}>
-                          {item.label}
-                        </SelectItem>
-                      ))}
-                    </SelectPopup>
-                  </Select>
+                  <FieldLabel>Target Date (optional)</FieldLabel>
+                  <Input {...field} type="date" />
                   {fieldState.error && (
                     <FieldError>{fieldState.error.message}</FieldError>
                   )}
