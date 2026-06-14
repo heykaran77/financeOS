@@ -1,0 +1,106 @@
+import {
+  Body,
+  Button,
+  Container,
+  Head,
+  Heading,
+  Hr,
+  Html,
+  Link,
+  Preview,
+  Section,
+  Text,
+  Tailwind,
+} from '@react-email/components';
+import * as React from 'react';
+
+interface VerificationEmailProps {
+  userName?: string | null;
+  verificationUrl?: string;
+}
+
+export default function VerificationEmail({
+  userName = 'there',
+  verificationUrl = 'https://finance-os.example.com/verify',
+}: VerificationEmailProps) {
+  const displayName = userName || 'there';
+  return (
+    <Html lang="en">
+      <Preview>Verify your email address for FinanceOS</Preview>
+      <Tailwind
+        config={{
+          theme: {
+            extend: {
+              colors: {
+                background: '#09090b',
+                card: '#18181b',
+                border: '#27272a',
+                text: '#f4f4f5',
+                muted: '#a1a1aa',
+                primary: '#ffffff',
+                primaryForeground: '#09090b',
+              },
+            },
+          },
+        }}
+      >
+        <Head />
+        <Body className="bg-background text-text mx-auto my-auto font-sans">
+          <Container className="border-border bg-card mx-auto my-[40px] max-w-[465px] rounded-lg border border-solid p-[32px]">
+            <Section className="mt-[8px] text-center">
+              <Text className="text-primary m-0 text-center text-[20px] font-bold tracking-tight">
+                FinanceOS
+              </Text>
+            </Section>
+
+            <Hr className="border-border my-[24px] border-solid" />
+
+            <Heading className="text-primary my-[16px] p-0 text-left text-[24px] leading-[32px] font-semibold">
+              Verify your email address
+            </Heading>
+
+            <Text className="text-text text-[14px] leading-[24px]">
+              Hello {displayName},
+            </Text>
+
+            <Text className="text-muted mt-[12px] text-[14px] leading-[24px]">
+              Thank you for registering on FinanceOS. To complete your signup
+              and verify your account, please click the button below:
+            </Text>
+
+            <Section className="mt-[32px] mb-[32px] text-center">
+              <Button
+                className="bg-primary text-primaryForeground box-border inline-block rounded-[6px] px-[24px] py-[12px] text-center text-[14px] font-medium no-underline"
+                href={verificationUrl}
+              >
+                Verify Email Address
+              </Button>
+            </Section>
+
+            <Text className="text-muted text-[12px] leading-[20px]">
+              If the button above does not work, you can copy and paste the
+              following URL into your web browser:
+            </Text>
+
+            <Text className="text-primary mt-[8px] text-[12px] leading-[20px] break-all">
+              <Link href={verificationUrl} className="text-primary underline">
+                {verificationUrl}
+              </Link>
+            </Text>
+
+            <Hr className="border-border my-[24px] border-solid" />
+
+            <Text className="text-muted mt-[16px] text-[12px] leading-[20px]">
+              This link is valid for 24 hours. If you did not request this
+              email, please ignore it or contact security if you have concerns.
+            </Text>
+
+            <Text className="text-muted/60 mt-[32px] text-center text-[11px] leading-[18px]">
+              © {new Date().getFullYear()} FinanceOS. All rights reserved.
+            </Text>
+          </Container>
+        </Body>
+      </Tailwind>
+    </Html>
+  );
+}

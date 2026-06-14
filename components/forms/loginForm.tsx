@@ -42,16 +42,51 @@ export function LoginForm({
           password: data.password,
         });
         if (response.error) {
-          toastManager.add({
-            title: 'Login failed',
-            description: response.error.message,
-            type: 'error',
-          });
+          if (response.error.code === 'EMAIL_NOT_VERIFIED') {
+            toastManager.add({
+              title: 'Email verification required',
+              description:
+                'Please verify your email address before logging in.',
+              type: 'warning',
+              actionProps: {
+                children: 'Resend Email',
+                onClick: async () => {
+                  toastManager.add({
+                    title: 'Sending email...',
+                    type: 'loading',
+                  });
+                  const res = await authClient.sendVerificationEmail({
+                    email: data.email,
+                    callbackURL: '/auth/login',
+                  });
+                  if (res.error) {
+                    toastManager.add({
+                      title: 'Failed to send email',
+                      description: res.error.message,
+                      type: 'error',
+                    });
+                  } else {
+                    toastManager.add({
+                      title: 'Verification email sent',
+                      description: 'Please check your inbox.',
+                      type: 'success',
+                    });
+                  }
+                },
+              },
+            });
+          } else {
+            toastManager.add({
+              title: 'Login failed',
+              description: response.error.message,
+              type: 'error',
+            });
+          }
         } else {
           router.push('/dashboard');
           toastManager.add({
             title: 'Login successful',
-            description: 'Welcome back to your Dashboard!',
+            description: 'Welcome back!',
             type: 'success',
           });
           form.reset();
