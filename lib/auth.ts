@@ -3,10 +3,41 @@ import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import * as schema from '@/db/schema/schema';
 import { nextCookies } from 'better-auth/next-js';
+import { render } from '@react-email/components';
+import VerificationEmail from '@/components/emails/VerificationEmail';
+import { sendEmail } from '@/lib/email';
 
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL!,
-  emailAndPassword: { enabled: true, requireEmailVerification: true },
+  emailVerification: {
+    sendVerificationEmail: async ({ user, url }) => {
+      console.log('Generating verification email for:', user.name, user.email);
+      console.log('Verification URL:', url);
+      const emailHTML = await render(
+        VerificationEmail({ userName: user.name, verificationUrl: url }),
+      );
+      await sendEmail({
+        to: user.email,
+        subject: 'Verify your email address - FinanceOS',
+        html: emailHTML,
+      });
+    },
+    sendOnSignUp: true,
+  },
+  emailAndPassword: {
+    enabled: true,
+    requireEmailVerification: true,
+    onExistingUserSignUp: async ({ user }) => {
+      if (!user.emailVerified) {
+        await auth.api.sendVerificationEmail({
+          body: {
+            email: user.email,
+            callbackURL: '/dashboard',
+          },
+        });
+      }
+    },
+  },
   database: drizzleAdapter(db, {
     provider: 'pg',
     schema: schema,
