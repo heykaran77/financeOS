@@ -5,6 +5,7 @@ import * as schema from '@/db/schema/schema';
 import { nextCookies } from 'better-auth/next-js';
 import { render } from '@react-email/components';
 import VerificationEmail from '@/components/emails/VerificationEmail';
+import ResetPasswordEmail from '@/components/emails/ResetPasswordEmail';
 import { sendEmail } from '@/lib/email';
 
 export const auth = betterAuth({
@@ -36,6 +37,17 @@ export const auth = betterAuth({
           },
         });
       }
+    },
+    sendResetPassword: async ({ user, url }) => {
+      if (!user.email) return;
+      const emailHTML = await render(
+        ResetPasswordEmail({ userName: user.name, resetPasswordUrl: url }),
+      );
+      await sendEmail({
+        to: user.email,
+        subject: 'Reset your password - FinanceOS',
+        html: emailHTML,
+      });
     },
   },
   database: drizzleAdapter(db, {
