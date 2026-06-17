@@ -184,7 +184,7 @@ export function EditGoalDialog({
                       render={
                         <button
                           type="button"
-                          aria-invalid={fieldState.invalid}
+                          data-invalid={fieldState.invalid ? '' : undefined}
                           className="border-input bg-background text-foreground hover:bg-accent data-[state=open]:border-ring data-[state=open]:ring-ring/24 flex h-9 w-full items-center justify-between gap-2 rounded-lg border px-3 text-left text-sm shadow-xs/5 transition-colors data-[state=open]:ring-[3px]"
                         />
                       }

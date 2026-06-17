@@ -14,15 +14,13 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarRail,
-  SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
 import { authClient } from '@/lib/auth-client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LogOut, User, CreditCard, Plus } from 'lucide-react';
+import { LogOut, User, CreditCard } from 'lucide-react';
 import { sidebarItems } from '@/config/navigationItemsConfig';
-import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Logout from '@/components/common/logout';
 import { ThemeToggle } from '@/components/common/theme-toggle';
 import Logo from './logo';
@@ -37,6 +35,7 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from '@/components/ui/menu';
+import { SidebarQuickActions } from '@/components/common/sidebar-quick-actions';
 
 function SidebarFooterSkeleton() {
   return (
@@ -85,15 +84,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu className="gap-0">
               <SidebarMenuItem className="px-1 group-data-[collapsible=icon]:px-0">
-                <Button
-                  size="sm"
-                  className="w-full justify-start gap-2 border-transparent bg-emerald-600 text-white shadow-emerald-900/20 group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0 hover:bg-emerald-700 focus-visible:ring-emerald-500/50 dark:bg-emerald-600 dark:hover:bg-emerald-700"
-                >
-                  <Plus className="size-5 shrink-0" />
-                  <span className="group-data-[collapsible=icon]:hidden">
-                    New transaction
-                  </span>
-                </Button>
+                <SidebarQuickActions />
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
