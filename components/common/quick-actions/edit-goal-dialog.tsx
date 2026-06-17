@@ -2,6 +2,8 @@
 
 import { useTransition, useState, useEffect } from 'react';
 import { z } from 'zod';
+import { format } from 'date-fns';
+import { CalendarIcon } from 'lucide-react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -24,6 +26,8 @@ import {
   InputGroupText,
 } from '@/components/ui/input-group';
 import { Button } from '@/components/ui/button';
+import { Popover, PopoverPopup, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
 import { updateGoal } from '@/actions/goal';
 import type { GoalItem } from '@/lib/queries/goal.queries';
 
@@ -173,9 +177,42 @@ export function EditGoalDialog({
               control={control}
               name="targetDate"
               render={({ field, fieldState }) => (
-                <Field>
+                <Field className="relative">
                   <FieldLabel>Target Date (optional)</FieldLabel>
-                  <Input {...field} type="date" />
+                  <Popover>
+                    <PopoverTrigger
+                      render={
+                        <button
+                          type="button"
+                          data-invalid={fieldState.invalid ? '' : undefined}
+                          className="border-input bg-background text-foreground hover:bg-accent data-[state=open]:border-ring data-[state=open]:ring-ring/24 flex h-9 w-full items-center justify-between gap-2 rounded-lg border px-3 text-left text-sm shadow-xs/5 transition-colors data-[state=open]:ring-[3px]"
+                        />
+                      }
+                    >
+                      <span
+                        className={!field.value ? 'text-muted-foreground' : ''}
+                      >
+                        {field.value
+                          ? format(new Date(field.value), 'PPP')
+                          : 'Pick a date'}
+                      </span>
+                      <CalendarIcon className="text-muted-foreground size-4 shrink-0" />
+                    </PopoverTrigger>
+                    <PopoverPopup align="start" side="bottom" sideOffset={4}>
+                      <Calendar
+                        mode="single"
+                        selected={
+                          field.value ? new Date(field.value) : undefined
+                        }
+                        onSelect={(date) => {
+                          field.onChange(
+                            date ? format(date, 'yyyy-MM-dd') : '',
+                          );
+                        }}
+                        initialFocus
+                      />
+                    </PopoverPopup>
+                  </Popover>
                   {fieldState.error && (
                     <FieldError>{fieldState.error.message}</FieldError>
                   )}
