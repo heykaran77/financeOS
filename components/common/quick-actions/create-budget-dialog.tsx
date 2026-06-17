@@ -1,6 +1,6 @@
 'use client';
 
-import { useTransition, useState } from 'react';
+import { useTransition, useState, useEffect } from 'react';
 import { z } from 'zod';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -30,7 +30,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { createBudget } from '@/actions/budget';
+import { createBudget, getBudgetCategoriesAction } from '@/actions/budget';
 import type { CategoryItem } from '@/lib/queries/budget.queries';
 import { Plus } from 'lucide-react';
 import { CATEGORY_ICONS } from '@/lib/icons';
@@ -56,7 +56,8 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 interface CreateBudgetDialogProps {
-  categories: CategoryItem[];
+  /** Pre-fetched categories. If omitted, fetched lazily on open. */
+  categories?: CategoryItem[];
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   /** If true, renders with its own trigger button */
@@ -66,7 +67,7 @@ interface CreateBudgetDialogProps {
 }
 
 export function CreateBudgetDialog({
-  categories,
+  categories: propCategories,
   open,
   onOpenChange,
   withTrigger = false,
@@ -78,6 +79,22 @@ export function CreateBudgetDialog({
   const isControlled = open !== undefined;
   const [internalOpen, setInternalOpen] = useState(false);
   const isOpen = isControlled ? open : internalOpen;
+
+  const [categories, setCategories] = useState<CategoryItem[]>(
+    propCategories ?? [],
+  );
+  const [dataLoaded, setDataLoaded] = useState(propCategories !== undefined);
+
+  useEffect(() => {
+    if (isOpen && !dataLoaded) {
+      getBudgetCategoriesAction()
+        .then((c) => {
+          setCategories(c);
+          setDataLoaded(true);
+        })
+        .catch(console.error);
+    }
+  }, [isOpen, dataLoaded]);
 
   const handleOpenChange = (newOpen: boolean) => {
     if (!newOpen) {
@@ -142,38 +159,73 @@ export function CreateBudgetDialog({
               <Field>
                 <FieldLabel>Category</FieldLabel>
                 <Select
-                  items={categoryItems}
                   value={field.value}
                   onValueChange={(val) => field.onChange(val || '')}
                 >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a category" />
-                  </SelectTrigger>
-                  <SelectPopup>
-                    {categoryItems.map((item) => (
-                      <SelectItem key={item.value} value={item.value}>
-                        <span className="flex items-center gap-2">
-                          {item.color && (
-                            <span
-                              className="size-2.5 rounded-full"
-                              style={{ backgroundColor: item.color }}
-                            />
-                          )}
-                          {item.icon &&
-                            CATEGORY_ICONS[item.icon] &&
+                  <SelectTrigger className="w-full">
+                    {(() => {
+                      const cat = categoryItems.find(
+                        (c) => c.value === field.value,
+                      );
+                      return cat ? (
+                        <span className="flex flex-1 items-center gap-1.5 truncate">
+                          {cat.icon && CATEGORY_ICONS[cat.icon] ? (
                             (() => {
-                              const Icon = CATEGORY_ICONS[item.icon];
+                              const Icon = CATEGORY_ICONS[cat.icon];
                               return (
                                 <Icon
                                   className="size-4"
-                                  style={{ color: item.color ?? 'inherit' }}
+                                  style={{ color: cat.color ?? 'inherit' }}
                                 />
                               );
-                            })()}
-                          {item.label}
+                            })()
+                          ) : (
+                            <span className="text-base leading-none">
+                              {cat.icon}
+                            </span>
+                          )}
+                          <span className="truncate">{cat.label}</span>
                         </span>
+                      ) : (
+                        <SelectValue placeholder="Select a category" />
+                      );
+                    })()}
+                  </SelectTrigger>
+                  <SelectPopup>
+                    {categoryItems.length === 0 ? (
+                      <SelectItem value="__empty__" disabled>
+                        No categories found
                       </SelectItem>
-                    ))}
+                    ) : (
+                      categoryItems.map((item) => (
+                        <SelectItem key={item.value} value={item.value}>
+                          <span className="flex items-center gap-2">
+                            {item.color && (
+                              <span
+                                className="size-2.5 rounded-full"
+                                style={{ backgroundColor: item.color }}
+                              />
+                            )}
+                            {item.icon && CATEGORY_ICONS[item.icon] ? (
+                              (() => {
+                                const Icon = CATEGORY_ICONS[item.icon];
+                                return (
+                                  <Icon
+                                    className="size-4"
+                                    style={{ color: item.color ?? 'inherit' }}
+                                  />
+                                );
+                              })()
+                            ) : (
+                              <span className="text-base leading-none">
+                                {item.icon}
+                              </span>
+                            )}
+                            {item.label}
+                          </span>
+                        </SelectItem>
+                      ))
+                    )}
                   </SelectPopup>
                 </Select>
                 {fieldState.error && (

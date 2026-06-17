@@ -5,6 +5,12 @@ import { budget } from '@/db/schema/schema';
 import { eq, and } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { getAuthenticatedUser } from '@/lib/auth.server';
+import { getUserCategories } from '@/lib/queries/budget.queries';
+
+export async function getBudgetCategoriesAction() {
+  const user = await getAuthenticatedUser();
+  return getUserCategories(user.id);
+}
 
 export async function createBudget(formData: FormData) {
   try {
