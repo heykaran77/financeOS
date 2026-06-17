@@ -7,7 +7,6 @@ import { CreateCategoryDialog } from '@/components/common/quick-actions/create-c
 import SectionHeading from '@/components/common/SectionHeading';
 import { CardFrame } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ButtonGroup } from '@/components/ui/group';
 import { Button } from '@/components/ui/button';
 import { Plus, FolderPlus } from 'lucide-react';
 
@@ -59,13 +58,17 @@ export default async function BudgetsPage() {
           heading="Budgets"
           subHeading="Create and manage spending limits per category."
         />
-        <ButtonGroup>
+        <div className="bg-muted flex w-fit items-center justify-center gap-x-1 rounded-lg p-1">
           <CreateBudgetDialog
             categories={categories}
             withTrigger
             trigger={
-              <Button variant="outline" size="sm" className="gap-2">
-                <Plus className="size-4" />
+              <Button
+                variant="ghost"
+                size="sm"
+                className="hover:bg-background dark:hover:bg-input gap-2 rounded-md px-3 font-medium transition-all hover:shadow-sm/5"
+              >
+                <Plus className="size-4 text-emerald-500" />
                 Budget
               </Button>
             }
@@ -73,13 +76,17 @@ export default async function BudgetsPage() {
           <CreateCategoryDialog
             withTrigger
             trigger={
-              <Button variant="outline" size="sm" className="gap-2">
-                <FolderPlus className="size-4" />
+              <Button
+                variant="ghost"
+                size="sm"
+                className="hover:bg-background dark:hover:bg-input gap-2 rounded-md px-3 font-medium transition-all hover:shadow-sm/5"
+              >
+                <FolderPlus className="size-4 text-purple-500" />
                 Category
               </Button>
             }
           />
-        </ButtonGroup>
+        </div>
       </div>
 
       <Suspense fallback={<BudgetGridSkeleton />}>

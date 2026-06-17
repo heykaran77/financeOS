@@ -36,16 +36,6 @@ export default function DashboardLayout({
             <div className="flex w-full max-w-[280px] items-center justify-center px-4">
               <GlobalSearch />
             </div>
-
-            <div className="flex flex-1 items-center justify-end gap-2">
-              <Button
-                size="sm"
-                className="border-transparent bg-emerald-600 text-white shadow-emerald-900/20 hover:bg-emerald-700 focus-visible:ring-emerald-500/50 dark:bg-emerald-600 dark:hover:bg-emerald-700"
-              >
-                <Plus className="mr-1 -ml-1 size-5" />
-                <span className="hidden sm:inline">New transaction</span>
-              </Button>
-            </div>
           </header>
           <div className="flex flex-1 flex-col gap-4 px-4 md:px-8 md:pt-2">
             {children}
