@@ -199,7 +199,9 @@ function ManualTransactionForm({
     },
   });
 
+  // eslint-disable-next-line react-hooks/incompatible-library -- React Hook Form's watch() is intentionally reactive
   const selectedType = form.watch('type');
+
   const selectedAccountId = form.watch('bankAccountId');
 
   // Filter categories by selected transaction type (transfers show all)
@@ -751,7 +753,12 @@ export function AddTransactionDialog({
           </DialogTrigger>
         ) : (
           <DialogTrigger
-            render={<Button id="add-transaction-btn" className="gap-2" />}
+            render={
+              <Button
+                id="add-transaction-btn"
+                className="gap-2 font-semibold tracking-tight"
+              />
+            }
           >
             <PlusIcon className="size-4" />
             Add Transaction
