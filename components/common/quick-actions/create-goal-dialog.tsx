@@ -236,11 +236,7 @@ export function CreateGoalDialog({
             Create Goal
           </DialogTrigger>
         ) : (
-          <DialogTrigger
-            render={
-              <Button className="border-transparent bg-emerald-600 text-white shadow-emerald-900/20 hover:bg-emerald-700 focus-visible:ring-emerald-500/50 dark:bg-emerald-600 dark:hover:bg-emerald-700" />
-            }
-          >
+          <DialogTrigger render={<Button className="" />}>
             <Plus className="mr-1 -ml-1 size-5" />
             Create Goal
           </DialogTrigger>
