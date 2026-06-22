@@ -1,4 +1,10 @@
-import { LayoutDashboard, ReceiptText, Wallet, Target } from 'lucide-react';
+import {
+  LayoutDashboard,
+  ReceiptText,
+  Wallet,
+  Target,
+  Tags,
+} from 'lucide-react';
 import type { SidebarItem } from '@/types/dashboard/navigationItems';
 
 export const sidebarItems: SidebarItem[] = [
@@ -21,5 +27,10 @@ export const sidebarItems: SidebarItem[] = [
     title: 'Goals',
     url: '/goals',
     icon: Target,
+  },
+  {
+    title: 'Categories',
+    url: '/categories',
+    icon: Tags,
   },
 ];

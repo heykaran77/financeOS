@@ -11,7 +11,7 @@ import { CreateBudgetDialog } from '@/components/common/quick-actions/create-bud
 // participates in the sidebar's collapsed/icon state properly.
 
 const TRIGGER_CLASS =
-  'w-full justify-start gap-2 text-sm font-normal text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground';
+  'w-full justify-start gap-2 text-sm font-normal text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground cursor-pointer';
 
 export function SidebarQuickActions() {
   return (
@@ -24,7 +24,7 @@ export function SidebarQuickActions() {
             tooltip="Add Transaction"
             className={TRIGGER_CLASS}
           >
-            <PlusIcon className="size-4 shrink-0 text-emerald-500" />
+            <PlusIcon className="size-5 shrink-0 text-emerald-500" />
             <span className="group-data-[collapsible=icon]:hidden">
               Add Transaction
             </span>
@@ -37,7 +37,7 @@ export function SidebarQuickActions() {
         withTrigger
         trigger={
           <SidebarMenuButton tooltip="New Goal" className={TRIGGER_CLASS}>
-            <TargetIcon className="size-4 shrink-0 text-blue-500" />
+            <TargetIcon className="size-5 shrink-0 text-blue-500" />
             <span className="group-data-[collapsible=icon]:hidden">
               New Goal
             </span>
@@ -50,7 +50,7 @@ export function SidebarQuickActions() {
         withTrigger
         trigger={
           <SidebarMenuButton tooltip="New Budget" className={TRIGGER_CLASS}>
-            <WalletIcon className="size-4 shrink-0 text-amber-500" />
+            <WalletIcon className="size-5 shrink-0 text-amber-500" />
             <span className="group-data-[collapsible=icon]:hidden">
               New Budget
             </span>
@@ -63,7 +63,7 @@ export function SidebarQuickActions() {
         withTrigger
         trigger={
           <SidebarMenuButton tooltip="New Category" className={TRIGGER_CLASS}>
-            <TagIcon className="size-4 shrink-0 text-purple-500" />
+            <TagIcon className="size-5 shrink-0 text-purple-500" />
             <span className="group-data-[collapsible=icon]:hidden">
               New Category
             </span>
