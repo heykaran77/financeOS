@@ -156,6 +156,7 @@ export function AppSidebar() {
                         src={user.image}
                         alt="user"
                         fill
+                        unoptimized
                         className="object-cover"
                       />
                     ) : (

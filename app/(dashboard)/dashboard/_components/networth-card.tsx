@@ -8,8 +8,6 @@ import { eq, sql, and, gte } from 'drizzle-orm';
 
 export async function NetworthCard({ userId }: { userId: string }) {
   const totalBalance = await getTotalBalance(userId);
-  const conversionRate = 1 / 84;
-  const secondaryBalance = totalBalance * conversionRate;
 
   // Calculate realistic trend from the last 6 months of transactions
   const sixMonthsAgo = new Date();
@@ -34,7 +32,7 @@ export async function NetworthCard({ userId }: { userId: string }) {
     pastBalance > 0 ? netChange / pastBalance : netChange > 0 ? 1 : 0;
 
   return (
-    <CardFrame className="flex h-full flex-col justify-between gap-4 p-6">
+    <CardFrame className="flex h-full flex-col justify-between gap-4 p-5">
       <div className="flex items-start justify-between">
         <div>
           <h3 className="font-advercase-regular text-lg text-emerald-400">
@@ -47,18 +45,6 @@ export async function NetworthCard({ userId }: { userId: string }) {
               format={{
                 style: 'currency',
                 currency: 'INR',
-                maximumFractionDigits: 0,
-              }}
-            />
-          </div>
-          <div className="mt-1 text-sm text-emerald-600/80 dark:text-emerald-500/80">
-            ~{' '}
-            <NumberFlow
-              value={secondaryBalance}
-              locales="en-US"
-              format={{
-                style: 'currency',
-                currency: 'USD',
                 maximumFractionDigits: 0,
               }}
             />
