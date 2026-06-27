@@ -45,7 +45,8 @@ export default function Hero() {
                 Star on Github
               </Button>
             </div>
-            <div className="relative w-full max-w-4xl rounded-xl border border-neutral-800 bg-neutral-950/50 p-1 shadow-2xl ring-1 ring-white/10 backdrop-blur-sm">
+            <div className="relative w-full max-w-4xl rounded-xl bg-neutral-950/50 p-1 shadow-2xl backdrop-blur-sm">
+              <div className="absolute inset-0 rounded-[inherit] mix-blend-overlay ring-2 ring-neutral-500/60" />
               <div className="relative overflow-hidden rounded-lg border border-neutral-800">
                 <Image
                   src="/assets/dithered-image.png"
