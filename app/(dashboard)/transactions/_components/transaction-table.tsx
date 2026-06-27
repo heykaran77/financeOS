@@ -16,7 +16,13 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   ArrowRightLeft,
+  ReceiptText,
   Plus,
+  CreditCard,
+  Banknote,
+  Smartphone,
+  Globe,
+  CircleEllipsis,
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -46,6 +52,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import {
+  Empty,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+  EmptyDescription,
+} from '@/components/ui/empty';
 import { NumberFlowCurrency } from '@/components/common/number-flow-currency';
 import type { TransactionWithRelations } from '@/lib/queries/transaction.queries';
 
@@ -60,16 +73,64 @@ function formatDate(date: Date | string): string {
   });
 }
 
-function getPaymentMethodLabel(method: string | null): string {
-  if (!method) return '—';
-  const labels: Record<string, string> = {
-    cash: 'Cash',
-    upi: 'UPI',
-    card: 'Card',
-    net_banking: 'Net Banking',
-    other: 'Other',
-  };
-  return labels[method] || method;
+function getRelativeDate(date: Date | string): string {
+  const d = typeof date === 'string' ? new Date(date) : date;
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const target = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const diffDays = Math.floor(
+    (today.getTime() - target.getTime()) / (1000 * 60 * 60 * 24),
+  );
+
+  if (diffDays === 0) return 'Today';
+  if (diffDays === 1) return 'Yesterday';
+  if (diffDays < 7) return `${diffDays} days ago`;
+  return formatDate(d);
+}
+
+const TYPE_CONFIG = {
+  income: {
+    label: 'Income',
+    icon: ArrowDownRight,
+    dotColor: 'bg-emerald-500',
+    iconColor: 'text-emerald-600 dark:text-emerald-400',
+    bgColor: 'bg-emerald-500/8 dark:bg-emerald-500/12',
+    badgeVariant: 'success' as const,
+  },
+  expense: {
+    label: 'Expense',
+    icon: ArrowUpRight,
+    dotColor: 'bg-red-500',
+    iconColor: 'text-red-600 dark:text-red-400',
+    bgColor: 'bg-red-500/8 dark:bg-red-500/12',
+    badgeVariant: 'error' as const,
+  },
+  transfer: {
+    label: 'Transfer',
+    icon: ArrowRightLeft,
+    dotColor: 'bg-blue-500',
+    iconColor: 'text-blue-600 dark:text-blue-400',
+    bgColor: 'bg-blue-500/8 dark:bg-blue-500/12',
+    badgeVariant: 'info' as const,
+  },
+} as const;
+
+type TransactionType = keyof typeof TYPE_CONFIG;
+
+const PAYMENT_METHOD_CONFIG: Record<
+  string,
+  { label: string; icon: typeof CreditCard }
+> = {
+  cash: { label: 'Cash', icon: Banknote },
+  upi: { label: 'UPI', icon: Smartphone },
+  card: { label: 'Card', icon: CreditCard },
+  net_banking: { label: 'Net Banking', icon: Globe },
+  other: { label: 'Other', icon: CircleEllipsis },
+};
+
+function getPaymentMethodConfig(method: string | null) {
+  if (!method) return null;
+  return PAYMENT_METHOD_CONFIG[method] || null;
 }
 
 // ─── Columns ────────────────────────────────────────────────────
@@ -103,18 +164,20 @@ const columns: ColumnDef<TransactionWithRelations>[] = [
     accessorKey: 'description',
     cell: ({ row }) => {
       const txn = row.original;
+      const config =
+        TYPE_CONFIG[txn.type as TransactionType] || TYPE_CONFIG.expense;
+      const Icon = config.icon;
       return (
-        <div className="flex items-center gap-2.5">
-          <div className="bg-secondary flex size-8 shrink-0 items-center justify-center rounded-full">
-            {txn.type === 'income' ? (
-              <ArrowDownRight className="size-4 text-emerald-600 dark:text-emerald-300" />
-            ) : txn.type === 'expense' ? (
-              <ArrowUpRight className="size-4 text-red-600 dark:text-red-300" />
-            ) : (
-              <ArrowRightLeft className="size-4 text-blue-600 dark:text-blue-300" />
+        <div className="flex items-center gap-3">
+          <div
+            className={cn(
+              'flex size-9 shrink-0 items-center justify-center rounded-lg transition-colors',
+              config.bgColor,
             )}
+          >
+            <Icon className={cn('size-4', config.iconColor)} />
           </div>
-          <div className="flex min-w-0 flex-col">
+          <div className="flex min-w-0 flex-col gap-0.5">
             <span className="truncate text-sm font-medium">
               {txn.description || 'Untitled'}
             </span>
@@ -128,20 +191,25 @@ const columns: ColumnDef<TransactionWithRelations>[] = [
       );
     },
     header: 'Description',
-    size: 250,
+    size: 280,
   },
   {
     accessorKey: 'type',
     cell: ({ row }) => {
-      const type = row.getValue('type') as string;
+      const type = row.getValue('type') as TransactionType;
+      const config = TYPE_CONFIG[type] || TYPE_CONFIG.expense;
       return (
-        <Badge variant="secondary" size="sm" className="font-normal capitalize">
-          {type}
+        <Badge variant={config.badgeVariant} size="sm">
+          <span
+            aria-hidden="true"
+            className={cn('size-1.5 rounded-full', config.dotColor)}
+          />
+          {config.label}
         </Badge>
       );
     },
     header: 'Type',
-    size: 110,
+    size: 120,
   },
   {
     accessorKey: 'amount',
@@ -153,15 +221,15 @@ const columns: ColumnDef<TransactionWithRelations>[] = [
     },
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue('amount') as string);
-      const type = row.original.type;
+      const type = row.original.type as TransactionType;
       return (
         <div
           className={cn(
-            'text-sm font-medium tabular-nums',
+            'text-right text-sm font-semibold tabular-nums',
             type === 'income'
-              ? 'text-emerald-600 dark:text-emerald-300'
+              ? 'text-emerald-600 dark:text-emerald-400'
               : type === 'expense'
-                ? 'text-red-600 dark:text-red-300'
+                ? 'text-red-600 dark:text-red-400'
                 : 'text-foreground',
           )}
         >
@@ -171,27 +239,44 @@ const columns: ColumnDef<TransactionWithRelations>[] = [
       );
     },
     header: 'Amount',
-    size: 140,
+    size: 130,
+    meta: { align: 'right' },
   },
   {
     accessorKey: 'date',
-    cell: ({ row }) => (
-      <span className="text-muted-foreground text-sm tabular-nums">
-        {formatDate(row.getValue('date'))}
-      </span>
-    ),
+    cell: ({ row }) => {
+      const dateValue = row.getValue('date') as Date | string;
+      return (
+        <div className="flex flex-col gap-0.5">
+          <span className="text-sm tabular-nums">
+            {getRelativeDate(dateValue)}
+          </span>
+          <span className="text-muted-foreground text-xs tabular-nums">
+            {formatDate(dateValue)}
+          </span>
+        </div>
+      );
+    },
     header: 'Date',
-    size: 120,
+    size: 140,
   },
   {
     accessorKey: 'paymentMethod',
-    cell: ({ row }) => (
-      <Badge variant="outline" size="sm" className="font-normal">
-        {getPaymentMethodLabel(row.getValue('paymentMethod'))}
-      </Badge>
-    ),
+    cell: ({ row }) => {
+      const method = row.getValue('paymentMethod') as string | null;
+      const config = getPaymentMethodConfig(method);
+      if (!config)
+        return <span className="text-muted-foreground text-sm">—</span>;
+      const MethodIcon = config.icon;
+      return (
+        <div className="text-muted-foreground flex items-center gap-1.5 text-sm">
+          <MethodIcon className="size-3.5 shrink-0 opacity-60" />
+          <span>{config.label}</span>
+        </div>
+      );
+    },
     header: 'Method',
-    size: 110,
+    size: 120,
   },
   {
     accessorKey: 'bankAccount',
@@ -204,7 +289,7 @@ const columns: ColumnDef<TransactionWithRelations>[] = [
           {account.color && (
             <span
               aria-hidden="true"
-              className="size-2 rounded-full"
+              className="size-2 shrink-0 rounded-full"
               style={{ backgroundColor: account.color }}
             />
           )}
@@ -220,6 +305,10 @@ const columns: ColumnDef<TransactionWithRelations>[] = [
   },
 ];
 
+// ─── Page Size Options ──────────────────────────────────────────
+
+const PAGE_SIZE_OPTIONS = [10, 20, 50] as const;
+
 // ─── Component ──────────────────────────────────────────────────
 
 type TransactionTableProps = {
@@ -228,11 +317,9 @@ type TransactionTableProps = {
 };
 
 export function TransactionTable({ data, totalCount }: TransactionTableProps) {
-  const pageSize = 10;
-
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize,
+    pageSize: 10,
   });
 
   const [sorting, setSorting] = useState<SortingState>([
@@ -254,11 +341,16 @@ export function TransactionTable({ data, totalCount }: TransactionTableProps) {
     },
   });
 
+  const { pageIndex, pageSize } = table.getState().pagination;
+  const totalRows = table.getRowCount();
+  const rangeStart = totalRows > 0 ? pageIndex * pageSize + 1 : 0;
+  const rangeEnd = Math.min((pageIndex + 1) * pageSize, totalRows);
+
   return (
     <CardFrame className="flex h-[calc(100svh-14rem)] w-full flex-col overflow-hidden">
       <div className="min-h-0 flex-1 [&_div[data-slot=table-container]]:h-full [&_div[data-slot=table-container]]:overflow-auto [&_div[data-slot=table-container]]:[-ms-overflow-style:none] [&_div[data-slot=table-container]]:[scrollbar-width:none] [&_div[data-slot=table-container]::-webkit-scrollbar]:hidden">
         <Table className="relative table-fixed">
-          <TableHeader className="bg-muted/80 sticky top-0 z-10 shadow-sm backdrop-blur-md">
+          <TableHeader className="bg-muted/80 sticky top-0 z-10 backdrop-blur-md">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow className="hover:bg-transparent" key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
@@ -266,6 +358,10 @@ export function TransactionTable({ data, totalCount }: TransactionTableProps) {
                   return (
                     <TableHead
                       key={header.id}
+                      className={cn(
+                        (header.column.columnDef.meta as { align?: string })
+                          ?.align === 'right' && 'text-right',
+                      )}
                       style={
                         columnSize ? { width: `${columnSize}px` } : undefined
                       }
@@ -318,11 +414,12 @@ export function TransactionTable({ data, totalCount }: TransactionTableProps) {
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
+                  className="transition-colors duration-150"
                   data-state={row.getIsSelected() ? 'selected' : undefined}
                   key={row.id}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell className="py-3" key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),
@@ -334,80 +431,76 @@ export function TransactionTable({ data, totalCount }: TransactionTableProps) {
             ) : (
               <TableRow className="hover:bg-transparent">
                 <TableCell
-                  className="h-[calc(100svh-22rem)] text-center"
+                  className="h-[calc(100svh-22rem)]"
                   colSpan={columns.length}
                 >
-                  <div className="flex flex-col items-center justify-center gap-2">
-                    <p className="text-muted-foreground text-sm tracking-tight md:text-lg">
-                      No transactions found.
-                    </p>
+                  <Empty className="py-16">
+                    <EmptyHeader>
+                      <EmptyMedia variant="icon">
+                        <ReceiptText className="size-4.5" />
+                      </EmptyMedia>
+                      <EmptyTitle>No transactions yet</EmptyTitle>
+                      <EmptyDescription>
+                        Start tracking your finances by adding your first
+                        transaction.
+                      </EmptyDescription>
+                    </EmptyHeader>
                     <Button
                       size="sm"
                       className="border-transparent bg-emerald-600 text-white shadow-emerald-900/20 hover:bg-emerald-700 focus-visible:ring-emerald-500/50 dark:bg-emerald-600 dark:hover:bg-emerald-700"
                     >
-                      <Plus className="mr-1 -ml-1 size-5" />
+                      <Plus className="mr-1 -ml-1 size-4" />
                       New transaction
                     </Button>
-                  </div>
+                  </Empty>
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </div>
-      <CardFrameFooter className="bg-muted/80 shrink-0 border-t p-4 shadow-sm backdrop-blur-md">
+      <CardFrameFooter className="bg-muted/80 shrink-0 border-t p-4 backdrop-blur-md">
         <div className="flex items-center justify-between gap-2">
-          {/* Results range selector */}
-          <div className="flex items-center gap-2 whitespace-nowrap">
-            <p className="text-muted-foreground text-sm">Viewing</p>
-            <Select
-              items={Array.from({ length: table.getPageCount() }, (_, i) => {
-                const start = i * table.getState().pagination.pageSize + 1;
-                const end = Math.min(
-                  (i + 1) * table.getState().pagination.pageSize,
-                  table.getRowCount(),
-                );
-                const pageNum = i + 1;
-                return { label: `${start}-${end}`, value: pageNum };
-              })}
-              onValueChange={(value) => {
-                table.setPageIndex((value as number) - 1);
-              }}
-              value={table.getState().pagination.pageIndex + 1}
-            >
-              <SelectTrigger
-                aria-label="Select result range"
-                className="min-w-none w-fit"
-                size="sm"
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectPopup>
-                {Array.from({ length: table.getPageCount() }, (_, i) => {
-                  const start = i * table.getState().pagination.pageSize + 1;
-                  const end = Math.min(
-                    (i + 1) * table.getState().pagination.pageSize,
-                    table.getRowCount(),
-                  );
-                  const pageNum = i + 1;
-                  return (
-                    <SelectItem key={pageNum} value={pageNum}>
-                      {`${start}-${end}`}
-                    </SelectItem>
-                  );
-                })}
-              </SelectPopup>
-            </Select>
+          {/* Left: Row count + Rows per page */}
+          <div className="flex items-center gap-3 whitespace-nowrap">
             <p className="text-muted-foreground text-sm">
+              Showing{' '}
+              <strong className="text-foreground font-medium">
+                {rangeStart}–{rangeEnd}
+              </strong>{' '}
               of{' '}
               <strong className="text-foreground font-medium">
                 {totalCount}
-              </strong>{' '}
-              results
+              </strong>
             </p>
+            <span className="text-border text-sm">·</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-muted-foreground text-sm">Rows</span>
+              <Select
+                value={pageSize}
+                onValueChange={(value) => {
+                  table.setPageSize(value as number);
+                }}
+              >
+                <SelectTrigger
+                  aria-label="Rows per page"
+                  className="min-w-none w-fit"
+                  size="sm"
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectPopup>
+                  {PAGE_SIZE_OPTIONS.map((size) => (
+                    <SelectItem key={size} value={size}>
+                      {size}
+                    </SelectItem>
+                  ))}
+                </SelectPopup>
+              </Select>
+            </div>
           </div>
 
-          {/* Pagination */}
+          {/* Right: Pagination */}
           <Pagination className="justify-end">
             <PaginationContent>
               <PaginationItem>

@@ -32,7 +32,10 @@ export default function RootLayout({
         geistMono.variable,
       )}
     >
-      <body className="antialiased" suppressHydrationWarning>
+      <body
+        className="antialiased selection:bg-emerald-200 selection:text-emerald-900 dark:selection:bg-emerald-800/50 dark:selection:text-emerald-50"
+        suppressHydrationWarning
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
