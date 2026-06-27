@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BankAccountRow } from '@/lib/queries/account.queries';
 import { CardFrame } from '@/components/ui/card';
@@ -9,6 +9,11 @@ import { AnimatedNumber as NumberFlow } from '@/components/ui/animated-number';
 export function AccountCardStack({ accounts }: { accounts: BankAccountRow[] }) {
   const [cards, setCards] = useState(accounts);
   const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    // Re-sync local state when new accounts data comes in from the server
+    setCards(accounts);
+  }, [accounts]);
 
   const moveToEnd = () => {
     setCards((prevCards) => {
@@ -67,7 +72,7 @@ export function AccountCardStack({ accounts }: { accounts: BankAccountRow[] }) {
                 }
               }}
             >
-              <CardFrame className="bg-card flex h-full flex-col justify-between gap-4 border p-6 shadow-md">
+              <CardFrame className="bg-card flex h-full flex-col justify-center gap-4 border p-5 shadow-md">
                 <div className="flex items-center justify-between">
                   <h3 className="font-advercase-regular text-lg text-emerald-400">
                     {account.name}

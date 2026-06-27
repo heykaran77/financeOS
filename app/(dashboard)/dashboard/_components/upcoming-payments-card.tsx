@@ -2,6 +2,7 @@ import { getUpcomingPayments } from '@/lib/queries/dashboard.queries';
 import { CardFrame } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { UpcomingPaymentsTable } from './upcoming-payments-table';
+import { cn } from '@/lib/utils';
 
 export async function UpcomingPaymentsCard({
   userId,
@@ -13,12 +14,12 @@ export async function UpcomingPaymentsCard({
   const payments = await getUpcomingPayments(userId, 3);
 
   return (
-    <CardFrame className={`flex flex-col gap-4 p-6 ${className || ''}`}>
+    <CardFrame className={cn('flex flex-col p-5', className)}>
       <h3 className="font-advercase-regular text-lg text-emerald-400">
         Upcoming payments
       </h3>
 
-      <div className="mt-1 max-h-[300px] w-full flex-1 overflow-y-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="mt-3 flex-1 overflow-y-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <UpcomingPaymentsTable data={payments} />
       </div>
     </CardFrame>
@@ -31,37 +32,23 @@ export function UpcomingPaymentsCardSkeleton({
   className?: string;
 }) {
   return (
-    <CardFrame className={`flex flex-col gap-4 p-6 ${className || ''}`}>
-      <div className="flex flex-col gap-1">
-        <h3 className="text-lg font-medium text-emerald-600 dark:text-emerald-500">
-          Upcoming payments
-        </h3>
-      </div>
-      <div className="mt-2 w-full">
-        <table className="w-full">
-          <thead className="border-b border-dashed">
-            <tr>
-              <th className="pb-2">
-                <Skeleton className="h-4 w-16" />
-              </th>
-              <th className="pb-2">
-                <Skeleton className="h-4 w-24" />
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {Array.from({ length: 3 }).map((_, i) => (
-              <tr key={i} className="border-b border-dashed last:border-0">
-                <td className="py-3">
-                  <Skeleton className="h-4 w-16" />
-                </td>
-                <td className="py-3">
-                  <Skeleton className="h-4 w-24" />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <CardFrame className={cn('flex flex-col p-5', className)}>
+      <Skeleton className="h-5 w-36" />
+
+      <div className="mt-3 flex flex-col gap-1">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div
+            key={i}
+            className="flex items-center gap-3 rounded-lg px-2 py-2.5"
+          >
+            <Skeleton className="size-8 shrink-0 rounded-lg" />
+            <div className="flex flex-1 flex-col gap-1.5">
+              <Skeleton className="h-3.5 w-32" />
+              <Skeleton className="h-3 w-20" />
+            </div>
+            <Skeleton className="h-3.5 w-16" />
+          </div>
+        ))}
       </div>
     </CardFrame>
   );

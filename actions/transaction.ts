@@ -41,28 +41,47 @@ export async function createTransaction(
     } = parsed.data;
 
     await db.transaction(async (tx) => {
+      // 0. Intercept default-cash and create a real account on the fly if needed
+      let finalBankAccountId = bankAccountId || null;
+
+      if (finalBankAccountId === 'default-cash') {
+        const [newCashAccount] = await tx
+          .insert(bankAccount)
+          .values({
+            userId: user.id,
+            name: 'Cash',
+            type: 'cash',
+            currency: 'INR',
+            color: '#10b981',
+            balance: '0',
+          })
+          .returning({ id: bankAccount.id });
+
+        finalBankAccountId = newCashAccount.id;
+      }
+
       // 1. Insert the transaction record
       await tx.insert(transaction).values({
         userId: user.id,
         type,
         amount: amount.toFixed(2),
         date,
-        description: description ?? null,
-        categoryId: categoryId ?? null,
-        bankAccountId: bankAccountId ?? null,
-        paymentMethod: paymentMethod ?? null,
-        source: source ?? null,
+        description: description || null,
+        categoryId: categoryId || null,
+        bankAccountId: finalBankAccountId,
+        paymentMethod: paymentMethod || null,
+        source: source || null,
         isRecurring: false,
       });
 
       // 2. Update account balance(s) if an account was selected
-      if (bankAccountId) {
+      if (finalBankAccountId) {
         const [account] = await tx
-          .select({ balance: bankAccount.balance })
+          .select({ balance: bankAccount.balance, type: bankAccount.type })
           .from(bankAccount)
           .where(
             and(
-              eq(bankAccount.id, bankAccountId),
+              eq(bankAccount.id, finalBankAccountId),
               eq(bankAccount.userId, user.id),
             ),
           )
@@ -70,6 +89,12 @@ export async function createTransaction(
 
         if (!account) {
           throw new Error('Source account not found');
+        }
+
+        if (account.type === 'credit_card' && type === 'income') {
+          throw new Error(
+            'Cannot add income directly to a credit card account',
+          );
         }
 
         const currentBalance = parseFloat(account.balance);
@@ -91,7 +116,7 @@ export async function createTransaction(
           .set({ balance: newBalance.toFixed(2) })
           .where(
             and(
-              eq(bankAccount.id, bankAccountId),
+              eq(bankAccount.id, finalBankAccountId),
               eq(bankAccount.userId, user.id),
             ),
           );
@@ -136,7 +161,8 @@ export async function createTransaction(
     const err = error as Error;
     if (
       err.message === 'Source account not found' ||
-      err.message === 'Destination account not found'
+      err.message === 'Destination account not found' ||
+      err.message === 'Cannot add income directly to a credit card account'
     ) {
       return { success: false, message: err.message };
     }

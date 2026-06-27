@@ -178,3 +178,43 @@ export async function getTransactionSummary(
     startDate,
   };
 }
+
+/**
+ * Get transaction summary for a specific date range.
+ */
+export async function getTransactionSummaryByDateRange(
+  userId: string,
+  startDate: Date,
+  endDate: Date,
+) {
+  const result = await db
+    .select({
+      totalIncome: sql<string>`COALESCE(SUM(CASE WHEN ${transaction.type} = 'income' THEN ${transaction.amount} ELSE 0.0 END), 0.0)`,
+      totalExpenses: sql<string>`COALESCE(SUM(CASE WHEN ${transaction.type} = 'expense' THEN ${transaction.amount} ELSE 0.0 END), 0.0)`,
+      totalTransfers: sql<string>`COALESCE(SUM(CASE WHEN ${transaction.type} = 'transfer' THEN ${transaction.amount} ELSE 0.0 END), 0.0)`,
+      transactionCount: sql<number>`count(*)`,
+    })
+    .from(transaction)
+    .where(
+      and(
+        eq(transaction.userId, userId),
+        gte(transaction.date, startDate),
+        lte(transaction.date, endDate),
+      ),
+    );
+
+  const row = result[0];
+  const income = parseFloat(row.totalIncome);
+  const expenses = parseFloat(row.totalExpenses);
+  const transfers = parseFloat(row.totalTransfers);
+
+  return {
+    totalIncome: income,
+    totalExpenses: expenses,
+    totalTransfers: transfers,
+    net: income - expenses,
+    transactionCount: Number(row.transactionCount),
+    startDate,
+    endDate,
+  };
+}
