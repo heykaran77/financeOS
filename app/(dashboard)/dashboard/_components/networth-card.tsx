@@ -32,7 +32,7 @@ export async function NetworthCard({ userId }: { userId: string }) {
     pastBalance > 0 ? netChange / pastBalance : netChange > 0 ? 1 : 0;
 
   return (
-    <CardFrame className="flex h-full flex-col justify-between gap-4 p-5">
+    <CardFrame className="flex h-full flex-col justify-center gap-4 p-5">
       <div className="flex items-start justify-between">
         <div>
           <h3 className="font-advercase-regular text-lg text-emerald-400">

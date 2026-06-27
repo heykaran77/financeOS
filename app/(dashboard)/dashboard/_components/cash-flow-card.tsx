@@ -135,28 +135,28 @@ export async function CashFlowCard({ userId }: { userId: string }) {
         </div>
       </div>
 
-      <div className="flex flex-col gap-3">
-        {/* Income Row */}
-        <div className="flex items-center gap-4">
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10">
-            <ArrowDownRight className="size-5 text-emerald-600 dark:text-emerald-400" />
-          </div>
-          <div className="flex w-full flex-col gap-1.5">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-foreground font-medium">Income</span>
-              <span className="font-semibold text-emerald-600 dark:text-emerald-400">
-                <NumberFlow
-                  value={currentSummary.totalIncome}
-                  locales="en-IN"
-                  format={{
-                    style: 'currency',
-                    currency: 'INR',
-                    maximumFractionDigits: 0,
-                  }}
-                />
-              </span>
+      <div className="grid grid-cols-2 gap-4">
+        {/* Income Col */}
+        <div className="flex flex-col gap-2 rounded-xl bg-emerald-500/5 p-3">
+          <div className="flex items-center gap-2">
+            <div className="flex size-6 shrink-0 items-center justify-center rounded-md bg-emerald-500/10">
+              <ArrowDownRight className="size-3.5 text-emerald-600 dark:text-emerald-400" />
             </div>
-            <div className="h-2 w-full overflow-hidden rounded-full bg-emerald-500/15">
+            <span className="text-foreground text-xs font-medium">Income</span>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+              <NumberFlow
+                value={currentSummary.totalIncome}
+                locales="en-IN"
+                format={{
+                  style: 'currency',
+                  currency: 'INR',
+                  maximumFractionDigits: 0,
+                }}
+              />
+            </span>
+            <div className="h-1.5 w-full overflow-hidden rounded-full bg-emerald-500/15">
               <div
                 className="h-full rounded-full bg-emerald-500 transition-all duration-1000 ease-out"
                 style={{ width: `${incomeWidth}%` }}
@@ -165,27 +165,29 @@ export async function CashFlowCard({ userId }: { userId: string }) {
           </div>
         </div>
 
-        {/* Expense Row */}
-        <div className="flex items-center gap-4">
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-red-500/10">
-            <ArrowUpRight className="size-5 text-red-600 dark:text-red-400" />
-          </div>
-          <div className="flex w-full flex-col gap-1.5">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-foreground font-medium">Expenses</span>
-              <span className="font-semibold text-red-600 dark:text-red-400">
-                <NumberFlow
-                  value={currentSummary.totalExpenses}
-                  locales="en-IN"
-                  format={{
-                    style: 'currency',
-                    currency: 'INR',
-                    maximumFractionDigits: 0,
-                  }}
-                />
-              </span>
+        {/* Expense Col */}
+        <div className="flex flex-col gap-2 rounded-xl bg-red-500/5 p-3">
+          <div className="flex items-center gap-2">
+            <div className="flex size-6 shrink-0 items-center justify-center rounded-md bg-red-500/10">
+              <ArrowUpRight className="size-3.5 text-red-600 dark:text-red-400" />
             </div>
-            <div className="h-2 w-full overflow-hidden rounded-full bg-red-500/15">
+            <span className="text-foreground text-xs font-medium">
+              Expenses
+            </span>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <span className="font-semibold text-red-600 dark:text-red-400">
+              <NumberFlow
+                value={currentSummary.totalExpenses}
+                locales="en-IN"
+                format={{
+                  style: 'currency',
+                  currency: 'INR',
+                  maximumFractionDigits: 0,
+                }}
+              />
+            </span>
+            <div className="h-1.5 w-full overflow-hidden rounded-full bg-red-500/15">
               <div
                 className="h-full rounded-full bg-red-500 transition-all duration-1000 ease-out"
                 style={{ width: `${expenseWidth}%` }}

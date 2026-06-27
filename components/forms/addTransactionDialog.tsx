@@ -117,6 +117,7 @@ function AccountSelect({
   placeholder,
   id,
   excludeId,
+  excludeTypes,
 }: {
   accounts: BankAccountRow[];
   value: string;
@@ -124,8 +125,12 @@ function AccountSelect({
   placeholder: string;
   id?: string;
   excludeId?: string;
+  excludeTypes?: string[];
 }) {
-  const filtered = accounts.filter((a) => a.id !== excludeId);
+  const filtered = accounts.filter(
+    (a) =>
+      a.id !== excludeId && (!excludeTypes || !excludeTypes.includes(a.type)),
+  );
   // Look up the selected account for display — avoids Base UI falling back to the raw UUID
   const selectedAccount = accounts.find((a) => a.id === value);
 
@@ -203,6 +208,16 @@ function ManualTransactionForm({
   const selectedType = form.watch('type');
 
   const selectedAccountId = form.watch('bankAccountId');
+
+  // Prevent "income" into a credit card. If user switches to "income" while a CC is selected, clear it.
+  useEffect(() => {
+    if (selectedType === 'income' && selectedAccountId) {
+      const account = accounts.find((a) => a.id === selectedAccountId);
+      if (account?.type === 'credit_card') {
+        form.setValue('bankAccountId', undefined);
+      }
+    }
+  }, [selectedType, selectedAccountId, accounts, form]);
 
   // Filter categories by selected transaction type (transfers show all)
   const filteredCategories =
@@ -380,6 +395,9 @@ function ManualTransactionForm({
                   field.onChange(!val || val === '' ? undefined : val)
                 }
                 placeholder="Select account"
+                excludeTypes={
+                  selectedType === 'income' ? ['credit_card'] : undefined
+                }
               />
             </Field>
           )}
