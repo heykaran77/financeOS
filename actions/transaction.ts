@@ -47,11 +47,11 @@ export async function createTransaction(
         type,
         amount: amount.toFixed(2),
         date,
-        description: description ?? null,
-        categoryId: categoryId ?? null,
-        bankAccountId: bankAccountId ?? null,
-        paymentMethod: paymentMethod ?? null,
-        source: source ?? null,
+        description: description || null,
+        categoryId: categoryId || null,
+        bankAccountId: bankAccountId || null,
+        paymentMethod: paymentMethod || null,
+        source: source || null,
         isRecurring: false,
       });
 
