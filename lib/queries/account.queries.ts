@@ -1,5 +1,5 @@
 import { db } from '@/db';
-import { bankAccount, category } from '@/db/schema/schema';
+import { bankAccount } from '@/db/schema/schema';
 import { eq, and, sql } from 'drizzle-orm';
 
 // ─── Queries ────────────────────────────────────────────────────
@@ -8,7 +8,7 @@ import { eq, and, sql } from 'drizzle-orm';
  * Fetch all active (non-archived) bank accounts for a user.
  */
 export async function getBankAccounts(userId: string) {
-  return db.query.bankAccount.findMany({
+  const accounts = await db.query.bankAccount.findMany({
     where: and(
       eq(bankAccount.userId, userId),
       eq(bankAccount.isArchived, false),
@@ -24,6 +24,25 @@ export async function getBankAccounts(userId: string) {
       isArchived: true,
     },
   });
+
+  const hasCash = accounts.some(
+    (a) => a.name.toLowerCase() === 'cash' || a.type.toLowerCase() === 'cash',
+  );
+
+  if (!hasCash) {
+    accounts.push({
+      id: 'default-cash',
+      name: 'Cash',
+      type: 'cash',
+      balance: '0',
+      currency: 'INR',
+      color: '#10b981',
+      icon: null,
+      isArchived: false,
+    } as (typeof accounts)[number]);
+  }
+
+  return accounts;
 }
 
 export type BankAccountRow = Awaited<
