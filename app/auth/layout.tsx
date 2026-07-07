@@ -27,7 +27,7 @@ export default async function AuthLayout({
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10">
-        <div className="flex items-center justify-center gap-2 md:justify-between">
+        <div className="flex items-center justify-between gap-2">
           <Link
             href="/"
             className="font-advercase-regular flex items-center gap-2 font-medium"
