@@ -8,7 +8,7 @@ import { DotPattern } from '../ui/dot-pattern';
 
 export default function Features() {
   return (
-    <Container className="mx-auto space-y-8 py-32">
+    <Container className="mx-auto space-y-8 py-4 md:py-20">
       <SectionHeading
         className="text-left"
         heading="Your money finally organized."

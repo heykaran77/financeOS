@@ -11,14 +11,9 @@ export default async function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
-  let session = null;
-  try {
-    session = await auth.api.getSession({
-      headers: await headers(),
-    });
-  } catch (error) {
-    console.error('Auth layout session error:', error);
-  }
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
   if (session) {
     redirect('/dashboard');
