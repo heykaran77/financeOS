@@ -232,12 +232,10 @@ export function CreateGoalDialog({
     return (
       <Dialog open={isOpen} onOpenChange={handleOpenChange}>
         {trigger ? (
-          <DialogTrigger render={trigger as React.ReactElement}>
-            Create Goal
-          </DialogTrigger>
+          <DialogTrigger render={trigger as React.ReactElement} />
         ) : (
           <DialogTrigger render={<Button className="" />}>
-            <Plus className="mr-1 -ml-1 size-5" />
+            <Plus className="mr-1 -ml-1 size-5 text-sm" />
             Create Goal
           </DialogTrigger>
         )}

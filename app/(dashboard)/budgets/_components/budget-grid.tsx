@@ -42,14 +42,13 @@ export function BudgetGrid({
             <EmptyTitle>No budgets yet</EmptyTitle>
             <EmptyDescription>
               Create your first budget to start tracking spending limits per
-              category. You&apos;ll see exactly how much you&apos;ve spent vs
-              your limit.
+              category.
             </EmptyDescription>
           </EmptyHeader>
           <EmptyContent>
             <Button
               onClick={() => setCreateOpen(true)}
-              className="border-transparent bg-emerald-600 text-white shadow-emerald-900/20 hover:bg-emerald-700 focus-visible:ring-emerald-500/50 dark:bg-emerald-600 dark:hover:bg-emerald-700"
+              className="border-transparent bg-emerald-600 text-sm text-white shadow-emerald-900/20 hover:bg-emerald-700 focus-visible:ring-emerald-500/50 dark:bg-emerald-600 dark:hover:bg-emerald-700"
             >
               <Plus className="mr-1 -ml-1 size-5" />
               Create Your First Budget

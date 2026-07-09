@@ -303,9 +303,7 @@ export function CreateBudgetDialog({
     return (
       <Dialog open={isOpen} onOpenChange={handleOpenChange}>
         {trigger ? (
-          <DialogTrigger render={trigger as React.ReactElement}>
-            Create Budget
-          </DialogTrigger>
+          <DialogTrigger render={trigger as React.ReactElement} />
         ) : (
           <DialogTrigger
             render={
