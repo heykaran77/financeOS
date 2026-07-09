@@ -77,7 +77,11 @@ export async function createTransaction(
       // 2. Update account balance(s) if an account was selected
       if (finalBankAccountId) {
         const [account] = await tx
-          .select({ balance: bankAccount.balance, type: bankAccount.type })
+          .select({
+            balance: bankAccount.balance,
+            type: bankAccount.type,
+            name: bankAccount.name,
+          })
           .from(bankAccount)
           .where(
             and(
@@ -94,6 +98,22 @@ export async function createTransaction(
         if (account.type === 'credit_card' && type === 'income') {
           throw new Error(
             'Cannot add income directly to a credit card account',
+          );
+        }
+
+        // Block expenses/transfers that exceed balance (credit cards exempt)
+        if (
+          (type === 'expense' || type === 'transfer') &&
+          account.type !== 'credit_card' &&
+          parseFloat(account.balance) < amount
+        ) {
+          const available = new Intl.NumberFormat('en-IN', {
+            style: 'currency',
+            currency: 'INR',
+            maximumFractionDigits: 2,
+          }).format(parseFloat(account.balance));
+          throw new Error(
+            `Insufficient balance in ${account.name}. Available: ${available}`,
           );
         }
 
@@ -162,7 +182,8 @@ export async function createTransaction(
     if (
       err.message === 'Source account not found' ||
       err.message === 'Destination account not found' ||
-      err.message === 'Cannot add income directly to a credit card account'
+      err.message === 'Cannot add income directly to a credit card account' ||
+      err.message.startsWith('Insufficient balance')
     ) {
       return { success: false, message: err.message };
     }

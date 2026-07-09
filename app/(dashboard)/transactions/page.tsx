@@ -19,7 +19,7 @@ export default async function TransactionsPage() {
   ]);
 
   return (
-    <div className="flex flex-col gap-6 pb-8">
+    <div className="flex flex-col gap-6 pb-32">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <SectionHeading
           heading="Transactions"
