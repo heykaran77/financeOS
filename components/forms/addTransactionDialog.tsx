@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition, useEffect } from 'react';
+import { useState, useTransition, useEffect, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
@@ -13,6 +13,7 @@ import {
   TrendingDownIcon,
   FileSpreadsheetIcon,
   InfoIcon,
+  AlertTriangleIcon,
 } from 'lucide-react';
 
 import {
@@ -57,7 +58,7 @@ import type {
 import { getTransactionFormData } from '@/actions/form-data';
 
 // ─── Category Icon Helper ────────────────────────────────────────
-// icon field can be a Lucide key (e.g. "Car") or an emoji string (e.g. "🚗")
+// icon field can be a Lucide key (e.g. "Car")
 
 function CategoryIcon({
   icon,
@@ -70,7 +71,7 @@ function CategoryIcon({
   const LucideIcon = CATEGORY_ICONS[icon];
   if (LucideIcon)
     return <LucideIcon className={cn('size-4 shrink-0', className)} />;
-  // Fallback: emoji or plain text stored directly
+  // Fallback: plain text stored directly
   return <span>{icon}</span>;
 }
 
@@ -209,6 +210,31 @@ function ManualTransactionForm({
 
   const selectedAccountId = form.watch('bankAccountId');
 
+  const watchedAmount = form.watch('amount');
+
+  // Compute balance warning for non-credit-card accounts on expense/transfer
+  const balanceWarning = useMemo(() => {
+    if (
+      !selectedAccountId ||
+      !watchedAmount ||
+      watchedAmount <= 0 ||
+      selectedType === 'income'
+    )
+      return null;
+    const account = accounts.find((a) => a.id === selectedAccountId);
+    if (!account || account.type === 'credit_card') return null;
+    const balance = parseFloat(account.balance);
+    if (watchedAmount > balance) {
+      const formatted = new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+        maximumFractionDigits: 2,
+      }).format(balance);
+      return `Exceeds available balance in ${account.name} (${formatted})`;
+    }
+    return null;
+  }, [selectedAccountId, watchedAmount, selectedType, accounts]);
+
   // Prevent "income" into a credit card. If user switches to "income" while a CC is selected, clear it.
   useEffect(() => {
     if (selectedType === 'income' && selectedAccountId) {
@@ -297,7 +323,7 @@ function ManualTransactionForm({
             <FieldLabel htmlFor="amount">Amount</FieldLabel>
             <div className="relative w-full">
               {/* ₹ uses text-foreground so it works in all themes */}
-              <span className="text-foreground pointer-events-none absolute inset-y-0 left-3 flex items-center text-sm font-semibold">
+              <span className="text-foreground pointer-events-none absolute inset-y-0 left-3 z-10 flex items-center text-sm font-semibold">
                 ₹
               </span>
               <Input
@@ -319,6 +345,12 @@ function ManualTransactionForm({
             {fieldState.invalid && (
               <span className="text-xs text-red-500">
                 {fieldState.error?.message}
+              </span>
+            )}
+            {!fieldState.invalid && balanceWarning && (
+              <span className="flex items-center gap-1.5 rounded-md bg-amber-500/10 px-2.5 py-1.5 text-xs font-medium text-amber-600 dark:text-amber-400">
+                <AlertTriangleIcon className="size-3.5 shrink-0" />
+                {balanceWarning}
               </span>
             )}
           </Field>
@@ -374,7 +406,7 @@ function ManualTransactionForm({
       />
 
       {/* ── Account + Category ── */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {/* Account (from) */}
         <Controller
           control={form.control}
@@ -490,7 +522,7 @@ function ManualTransactionForm({
       />
 
       {/* ── Payment Method + Conditional fields ── */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {/* Payment Method */}
         <Controller
           control={form.control}
@@ -766,15 +798,13 @@ export function AddTransactionDialog({
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         {trigger ? (
-          <DialogTrigger render={trigger as React.ReactElement}>
-            Add Transaction
-          </DialogTrigger>
+          <DialogTrigger render={trigger as React.ReactElement} />
         ) : (
           <DialogTrigger
             render={
               <Button
                 id="add-transaction-btn"
-                className="gap-2 font-semibold tracking-tight"
+                className="gap-2 text-sm font-semibold tracking-tight"
               />
             }
           >

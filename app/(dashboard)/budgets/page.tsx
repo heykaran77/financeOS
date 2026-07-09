@@ -53,7 +53,7 @@ export default async function BudgetsPage() {
 
   return (
     <div className="flex flex-col gap-6 pb-8">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <SectionHeading
           heading="Budgets"
           subHeading="Create and manage spending limits per category."
@@ -66,7 +66,7 @@ export default async function BudgetsPage() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="hover:bg-background dark:hover:bg-input gap-2 rounded-md px-3 font-medium transition-all hover:shadow-sm/5"
+                className="hover:bg-background dark:hover:bg-input gap-2 rounded-md px-3 text-sm font-medium transition-all hover:shadow-sm/5"
               >
                 <Plus className="size-4 text-emerald-500" />
                 Budget
@@ -79,7 +79,7 @@ export default async function BudgetsPage() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="hover:bg-background dark:hover:bg-input gap-2 rounded-md px-3 font-medium transition-all hover:shadow-sm/5"
+                className="hover:bg-background dark:hover:bg-input gap-2 rounded-md px-3 text-sm font-medium transition-all hover:shadow-sm/5"
               >
                 <FolderPlus className="size-4 text-purple-500" />
                 Category

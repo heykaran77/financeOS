@@ -201,17 +201,7 @@ export function EditCategoryDialog({
                     })}
                   </SelectPopup>
                 </Select>
-                <div className="mt-1 flex items-center justify-between">
-                  <p className="text-muted-foreground text-xs">
-                    Or type an emoji below
-                  </p>
-                </div>
-                <Input
-                  value={field.value}
-                  onChange={(e) => field.onChange(e.target.value)}
-                  placeholder="🍔, 🚗, etc."
-                  className="mt-2"
-                />
+
                 {fieldState.error && (
                   <FieldError>{fieldState.error.message}</FieldError>
                 )}

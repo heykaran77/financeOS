@@ -22,20 +22,22 @@ export const metadata = {
 export default function CategoriesPage() {
   return (
     <div className="flex flex-col gap-6 pb-8">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <SectionHeading
           heading="Categories"
           subHeading="Manage your custom categories and view spending analytics."
         />
-        <CreateCategoryDialog
-          withTrigger
-          trigger={
-            <Button>
-              <Plus className="mr-2 size-4" />
-              Add Category
-            </Button>
-          }
-        />
+        <div className="w-fit">
+          <CreateCategoryDialog
+            withTrigger
+            trigger={
+              <Button>
+                <Plus className="mr-2 size-4" />
+                Add Category
+              </Button>
+            }
+          />
+        </div>
       </div>
 
       {/* Analytics Component — client-side with its own loading state */}
@@ -93,7 +95,7 @@ function CategorySection({
                   {Icon ? (
                     <Icon className="size-5" />
                   ) : (
-                    <span>{cat.icon || '🏷️'}</span>
+                    <span className="text-xs">{cat.icon || 'Icon'}</span>
                   )}
                 </div>
                 <div className="flex flex-col">

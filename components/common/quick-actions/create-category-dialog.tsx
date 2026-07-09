@@ -255,9 +255,7 @@ export function CreateCategoryDialog({
     return (
       <Dialog open={isOpen} onOpenChange={handleOpenChange}>
         {trigger ? (
-          <DialogTrigger render={trigger as React.ReactElement}>
-            Create Category
-          </DialogTrigger>
+          <DialogTrigger render={trigger as React.ReactElement} />
         ) : (
           <DialogTrigger render={<Button variant="outline" size="sm" />}>
             <Plus className="mr-1 -ml-1 size-4" />

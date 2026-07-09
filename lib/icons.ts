@@ -26,6 +26,10 @@ import {
   Wrench,
   CoinsIcon,
   BadgeDollarSign,
+  Landmark,
+  Wallet,
+  TrendingUp,
+  CircleDollarSign,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -56,4 +60,8 @@ export const CATEGORY_ICONS: Record<string, LucideIcon> = {
   Truck,
   Wrench,
   BadgeDollarSign,
+  Landmark,
+  Wallet,
+  TrendingUp,
+  CircleDollarSign,
 };

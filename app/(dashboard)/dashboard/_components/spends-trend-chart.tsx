@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useMemo, useState, useCallback } from 'react';
+import { use, useMemo, useState, useCallback, useEffect } from 'react';
 import {
   Bar,
   BarChart,
@@ -20,6 +20,7 @@ import NumberFlow from '@number-flow/react';
 type SpendData = { month: string; amount: number }[];
 
 const CHART_MARGIN = 38;
+const CHART_MARGIN_MOBILE = 10;
 
 const chartConfig = {
   amount: {
@@ -41,6 +42,14 @@ export function SpendsTrendChart({
     () => data.reduce((acc, curr) => acc + curr.amount, 0),
     [data],
   );
+
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 640);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
@@ -84,13 +93,13 @@ export function SpendsTrendChart({
   });
 
   return (
-    <CardFrame className="flex h-full flex-col gap-4 p-6">
+    <CardFrame className="flex h-full flex-col gap-3 p-4 sm:gap-4 sm:p-6">
       <h3 className="font-advercase-regular text-lg text-emerald-400">
         Monthly spends
       </h3>
       <div className="flex min-h-[200px] flex-1 flex-col">
         <div className="mb-4 flex items-end justify-between">
-          <p className="text-primary text-3xl font-bold tracking-tighter">
+          <p className="text-primary text-2xl font-bold tracking-tighter sm:text-3xl">
             <NumberFlow
               value={selectedData.value}
               format={{
@@ -111,11 +120,14 @@ export function SpendsTrendChart({
           </div>
         </div>
 
-        <ChartContainer config={chartConfig} className="min-h-[200px] flex-1">
+        <ChartContainer
+          config={chartConfig}
+          className="min-h-[150px] flex-1 overflow-hidden sm:min-h-[200px]"
+        >
           <BarChart
             accessibilityLayer
             data={data}
-            margin={{ left: CHART_MARGIN }}
+            margin={{ left: isMobile ? CHART_MARGIN_MOBILE : CHART_MARGIN }}
             onMouseMove={(state) => {
               if (state?.activeTooltipIndex != null) {
                 handleBarHover(Number(state.activeTooltipIndex));
@@ -132,6 +144,8 @@ export function SpendsTrendChart({
               tickMargin={10}
               axisLine={false}
               tickFormatter={(value: string) => value.slice(0, 3)}
+              fontSize={12}
+              interval="preserveStartEnd"
             />
 
             <Tooltip cursor={false} content={() => null} />
@@ -158,7 +172,11 @@ export function SpendsTrendChart({
               y={springValue}
               stroke="var(--foreground)"
               strokeDasharray="3 3"
-              label={<HoverTraceLabel value={selectedData.value} />}
+              label={
+                !isMobile ? (
+                  <HoverTraceLabel value={selectedData.value} />
+                ) : undefined
+              }
             />
           </BarChart>
         </ChartContainer>

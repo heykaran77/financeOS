@@ -3,10 +3,16 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BankAccountRow } from '@/lib/queries/account.queries';
-import { CardFrame } from '@/components/ui/card';
 import { AnimatedNumber as NumberFlow } from '@/components/ui/animated-number';
+import { FlippableAccountCard } from '@/components/ui/flippable-account-card';
 
-export function AccountCardStack({ accounts }: { accounts: BankAccountRow[] }) {
+export function AccountCardStack({
+  accounts,
+  userName,
+}: {
+  accounts: BankAccountRow[];
+  userName: string;
+}) {
   const [cards, setCards] = useState(accounts);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -28,7 +34,7 @@ export function AccountCardStack({ accounts }: { accounts: BankAccountRow[] }) {
 
   return (
     <div
-      className="perspective-1000 relative h-full min-h-[160px] w-full"
+      className="perspective-1000 relative h-full min-h-[220px] w-full"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -72,17 +78,16 @@ export function AccountCardStack({ accounts }: { accounts: BankAccountRow[] }) {
                 }
               }}
             >
-              <CardFrame className="bg-card flex h-full flex-col justify-center gap-4 border p-5 shadow-md">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-advercase-regular text-lg text-emerald-400">
-                    {account.name}
-                  </h3>
-                  <div className="text-muted-foreground/60 font-mono text-xs">
-                    {account.type.toUpperCase()}
-                  </div>
-                </div>
-
-                <div className="mt-2 text-4xl font-bold tracking-tight">
+              <FlippableAccountCard
+                className="h-full w-full max-w-none"
+                accountName={account.name}
+                accountHolderName={userName}
+                accountType={account.type}
+                currency={account.currency || 'INR'}
+                color={account.color || undefined}
+                hideGlow
+                solidBackground
+                balanceElement={
                   <NumberFlow
                     key={isTop ? 'active' : 'inactive'}
                     value={Number(account.balance)}
@@ -93,14 +98,8 @@ export function AccountCardStack({ accounts }: { accounts: BankAccountRow[] }) {
                       maximumFractionDigits: 0,
                     }}
                   />
-                </div>
-
-                <div className="mt-1 flex items-center gap-2">
-                  <span className="text-muted-foreground font-mono text-sm">
-                    **** **** **** {account.id.substring(0, 4)}
-                  </span>
-                </div>
-              </CardFrame>
+                }
+              />
             </motion.div>
           );
         })}

@@ -4,6 +4,7 @@ import {
   Wallet,
   Target,
   Tags,
+  Landmark,
 } from 'lucide-react';
 import type { SidebarItem } from '@/types/dashboard/navigationItems';
 
@@ -12,6 +13,11 @@ export const sidebarItems: SidebarItem[] = [
     title: 'Dashboard',
     url: '/dashboard',
     icon: LayoutDashboard,
+  },
+  {
+    title: 'Accounts',
+    url: '/accounts',
+    icon: Landmark,
   },
   {
     title: 'Transactions',
