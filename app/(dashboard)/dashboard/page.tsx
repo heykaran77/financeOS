@@ -79,7 +79,7 @@ export default async function DashboardPage() {
 
       {/* Row 2: Spends Trend (2/3) + Recent Transactions (1/3) */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <div className="h-[400px] lg:col-span-2">
+        <div className="h-[300px] sm:h-[400px] lg:col-span-2">
           <Suspense fallback={<SpendsTrendChartSkeleton />}>
             <SpendsTrendChart dataPromise={spendsPromise} />
           </Suspense>
