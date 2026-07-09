@@ -5,6 +5,10 @@ export const NavbarConfig = {
       href: '/dashboard',
     },
     {
+      label: 'Accounts',
+      href: '/accounts',
+    },
+    {
       label: 'Transactions',
       href: '/transactions',
     },
