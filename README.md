@@ -22,7 +22,7 @@ Finance OS is a personal financial operating system. It is structured around the
 
 ### Dashboard
 
-The central overview of your financial life. At a glance, you see your total net worth across all accounts, your cash flow balance (income vs. expenses) for the current period, and a visual breakdown of how your accounts are distributed. Below the summary row, the dashboard presents:
+The central overview of your financial life. At a glance, you see your total net worth across all accounts, your cash flow balance (income vs. expenses) for the current period, and a visual breakdown of how your accounts are distributed through an interactive account card stack. Below the summary row, the dashboard presents:
 
 - A monthly spending trend chart spanning the last twelve months
 - A real-time budget status tracker per category
@@ -35,11 +35,11 @@ All chart data is fetched in parallel using React's `Suspense` boundaries with p
 
 ### Transactions
 
-A unified ledger for all money movement. Every transaction is typed as either an expense, an income, or a transfer. Transactions carry metadata including the payment method, the source (for income), a category, tags, a linked bank account, and an optional link to a savings goal. The data model enforces that amounts are always positive and that transaction types are constrained at the database level.
+A unified ledger for all money movement, presented via a powerful data table (using TanStack Table). Every transaction is typed as either an expense, an income, or a transfer. Transactions carry metadata including the payment method, the source (for income), a category, tags, a linked bank account, and an optional link to a savings goal. The data model enforces that amounts are always positive and that transaction types are constrained at the database level.
 
 ### Budgets
 
-Spending limits set per category, per period. Budget periods can be monthly, weekly, or yearly. The system enforces one budget per user per category per period through a database-level unique constraint. Budget status is computed live against actual transaction data, giving you an honest read on where you stand.
+Spending limits set per category, per period. Budget periods can be monthly, weekly, or yearly. The system enforces one budget per user per category per period through a database-level unique constraint. Budget status is computed live against actual transaction data, giving you an honest read on where you stand. You can easily create and manage budgets alongside custom category management.
 
 ### Goals
 
@@ -47,11 +47,11 @@ Savings goals with a target amount, an optional target date, and three possible 
 
 ### Recurring Transactions
 
-Templates for expenses and incomes that repeat on a schedule (daily, weekly, monthly, or yearly). These are designed to be processed by a server action or scheduled job, which creates real transaction records and advances the next due date.
+Templates for expenses and incomes that repeat on a schedule (daily, weekly, monthly, or yearly). These are presented in a dedicated table with automatic brand logo resolution. They are designed to be processed by a server action or scheduled job, which creates real transaction records and advances the next due date.
 
 ### Bank Accounts
 
-A registry of the user's financial accounts — checking, savings, credit cards, cash wallets, investments, and others. Each account tracks a running balance, a currency (defaulting to INR), and optional UI metadata like a hex color and an icon identifier.
+A registry of the user's financial accounts — checking, savings, credit cards, cash wallets, investments, and others. Each account tracks a running balance, a currency (defaulting to INR), and optional UI metadata like a hex color and an icon identifier. Accounts can be fully managed (created, edited, and deleted) through built-in forms.
 
 ---
 
@@ -102,7 +102,9 @@ Animation is handled at two levels:
 
 **Recharts** powers the data visualization layer, providing the spending trend bar chart, budget status indicators, category spending pie chart, and goals progress chart.
 
-**`class-variance-authority`** and **`tailwind-merge`** handle variant-based component styling and class conflict resolution, respectively.
+**TanStack Table** is used for powerful, headless data tables like the main transaction ledger.
+
+**`class-variance-authority`** and **`tailwind-merge`** handle variant-based component styling and class conflict resolution, respectively. A built-in theme switcher supports dynamic toggling between light and dark modes.
 
 ### Forms and Validation
 
