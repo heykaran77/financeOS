@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" width="100%">
+  <defs>
+    <style>
+      .bg { fill: #09090B; }
+      .grid-line { stroke: #27272A; stroke-width: 0.5; }
+      .text-title { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-weight: 600; fill: #FFFFFF; }
+      .text-body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-weight: 400; fill: #A1A1AA; }
+      .card-bg { fill: #18181B; }
+      .card-stroke { stroke: #27272A; stroke-width: 1; }
+      .link-line { stroke: #3F3F46; stroke-width: 2; stroke-dasharray: 4 4; fill: none; }
+      .accent-auth { fill: #10B981; }
+      .accent-db { fill: #3B82F6; }
+    </style>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" class="grid-line" stroke-opacity="0.5" />
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="400" class="bg" />
+  <rect width="1200" height="400" fill="url(#grid)" />
+
+  <text x="600" y="80" class="text-title" font-size="28" text-anchor="middle">A focused, specialized stack.</text>
+
+  <!-- Connectors -->
+  <path d="M 350 200 L 850 200" class="link-line" />
+
+  <!-- Node 1: Next.js -->
+  <g transform="translate(150, 150)">
+    <rect x="0" y="0" width="220" height="120" rx="12" class="card-bg card-stroke" />
+    <circle cx="110" cy="36" r="14" fill="#FAFAFA" />
+    <text x="110" y="76" class="text-title" font-size="16" text-anchor="middle">Next.js 16</text>
+    <text x="110" y="96" class="text-body" font-size="13" text-anchor="middle">App Router &amp; Server Actions</text>
+  </g>
+
+  <!-- Node 2: Better Auth -->
+  <g transform="translate(490, 150)">
+    <rect x="0" y="0" width="220" height="120" rx="12" class="card-bg card-stroke" />
+    <circle cx="110" cy="36" r="14" class="accent-auth" />
+    <text x="110" y="76" class="text-title" font-size="16" text-anchor="middle">Better Auth</text>
+    <text x="110" y="96" class="text-body" font-size="13" text-anchor="middle">Integrated, End-to-end</text>
+  </g>
+
+  <!-- Node 3: PostgreSQL -->
+  <g transform="translate(830, 150)">
+    <rect x="0" y="0" width="220" height="120" rx="12" class="card-bg card-stroke" />
+    <circle cx="110" cy="36" r="14" class="accent-db" />
+    <text x="110" y="76" class="text-title" font-size="16" text-anchor="middle">PostgreSQL</text>
+    <text x="110" y="96" class="text-body" font-size="13" text-anchor="middle">via Drizzle ORM</text>
+  </g>
+</svg>
