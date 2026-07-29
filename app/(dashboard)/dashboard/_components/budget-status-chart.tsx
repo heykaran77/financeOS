@@ -35,9 +35,12 @@ export function BudgetStatusChart({
 }) {
   const data = use(dataPromise);
 
+  // Filter out budgets where nothing has been spent yet
+  const activeData = useMemo(() => data.filter((b) => b.spent > 0), [data]);
+
   const chartConfig = useMemo(() => {
     const config: ChartConfig = {};
-    data.forEach((budget) => {
+    activeData.forEach((budget) => {
       const key = sanitizeKey(budget.category);
       config[key] = {
         label: `${budget.category} (${Math.round(budget.progress)}%)`,
@@ -48,16 +51,16 @@ export function BudgetStatusChart({
       };
     });
     return config;
-  }, [data]);
+  }, [activeData]);
 
   const chartData = useMemo(() => {
-    const realData = data.map((b) => ({
+    const realData = activeData.map((b) => ({
       name: sanitizeKey(b.category),
       value: Math.round(Math.min(b.progress, 100)),
       fill: `var(--color-${sanitizeKey(b.category)}-0)`,
     }));
     return realData;
-  }, [data]);
+  }, [activeData]);
 
   return (
     <CardFrame className="flex h-full flex-col p-5">
@@ -65,10 +68,14 @@ export function BudgetStatusChart({
         Budget status
       </h3>
 
-      <div className="min-h-[200px] w-full flex-1">
+      <div className="min-h-50 w-full flex-1">
         {data.length === 0 ? (
           <div className="text-muted-foreground flex h-full items-center justify-center text-sm">
             No active budgets
+          </div>
+        ) : activeData.length === 0 ? (
+          <div className="text-muted-foreground flex h-full items-center justify-center text-sm">
+            No spending against budgets yet
           </div>
         ) : (
           <EvilRadialChart
@@ -103,7 +110,7 @@ export function BudgetStatusChartSkeleton() {
           Monthly budget status
         </h3>
       </div>
-      <div className="min-h-[200px] w-full flex-1">
+      <div className="min-h-50 w-full flex-1">
         {/* We use the EvilRadialChart's native isLoading state */}
         <EvilRadialChart
           isLoading
