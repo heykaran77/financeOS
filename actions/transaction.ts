@@ -190,3 +190,80 @@ export async function createTransaction(
     return { success: false, message: 'Failed to add transaction' };
   }
 }
+
+export async function deleteTransactions(
+  transactionIds: string[],
+): Promise<{ success: boolean; message: string }> {
+  try {
+    const user = await getAuthenticatedUser();
+
+    await db.transaction(async (tx) => {
+      for (const id of transactionIds) {
+        // Find the transaction
+        const [txn] = await tx
+          .select()
+          .from(transaction)
+          .where(and(eq(transaction.id, id), eq(transaction.userId, user.id)))
+          .limit(1);
+
+        if (!txn) {
+          throw new Error(`Transaction ${id} not found`);
+        }
+
+        const amount = parseFloat(txn.amount);
+
+        // Reverse the balance change
+        if (txn.bankAccountId) {
+          const [account] = await tx
+            .select({ balance: bankAccount.balance })
+            .from(bankAccount)
+            .where(
+              and(
+                eq(bankAccount.id, txn.bankAccountId),
+                eq(bankAccount.userId, user.id),
+              ),
+            )
+            .limit(1);
+
+          if (account) {
+            let newBalance = parseFloat(account.balance);
+            if (txn.type === 'expense') {
+              newBalance += amount;
+            } else if (txn.type === 'income') {
+              newBalance -= amount;
+            } else if (txn.type === 'transfer') {
+              newBalance += amount; // Add back to source
+            }
+
+            await tx
+              .update(bankAccount)
+              .set({ balance: newBalance.toFixed(2) })
+              .where(
+                and(
+                  eq(bankAccount.id, txn.bankAccountId),
+                  eq(bankAccount.userId, user.id),
+                ),
+              );
+          }
+        }
+
+        // For transfers, also reverse destination account
+        // Note: The database schema currently doesn't store the `toAccountId`
+        // so we can only revert the balance on the source account (`bankAccountId`).
+
+        // Finally, delete the transaction
+        await tx
+          .delete(transaction)
+          .where(and(eq(transaction.id, id), eq(transaction.userId, user.id)));
+      }
+    });
+
+    revalidatePath('/transactions');
+    revalidatePath('/dashboard');
+
+    return { success: true, message: 'Transactions deleted successfully' };
+  } catch (error) {
+    console.error('[deleteTransactions]', error);
+    return { success: false, message: 'Failed to delete transactions' };
+  }
+}
