@@ -18,7 +18,7 @@ import {
 import { authClient } from '@/lib/auth-client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LogOut, User, CreditCard } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { sidebarItems } from '@/config/navigationItemsConfig';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Logout from '@/components/common/logout';
@@ -26,15 +26,7 @@ import { ThemeToggle } from '@/components/common/theme-toggle';
 import Logo from './logo';
 import Image from 'next/image';
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-  Menu,
-  MenuGroup,
-  MenuGroupLabel,
-  MenuItem,
-  MenuPopup,
-  MenuSeparator,
-  MenuTrigger,
-} from '@/components/ui/menu';
+
 import { SidebarQuickActions } from '@/components/common/sidebar-quick-actions';
 
 function SidebarFooterSkeleton() {
@@ -141,56 +133,32 @@ export function AppSidebar() {
         ) : user ? (
           <SidebarMenu className="gap-4">
             <SidebarMenuItem>
-              <Menu>
-                <MenuTrigger
-                  render={
-                    <SidebarMenuButton
-                      size="lg"
-                      className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground group-data-[collapsible=icon]:justify-center"
+              <SidebarMenuButton
+                size="lg"
+                className="cursor-default group-data-[collapsible=icon]:justify-center hover:bg-transparent"
+              >
+                <div className="relative flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-emerald-600 text-sm font-semibold text-white dark:bg-emerald-500">
+                  {user.image ? (
+                    <Image
+                      src={user.image}
+                      alt="user"
+                      fill
+                      unoptimized
+                      className="object-cover"
                     />
-                  }
-                >
-                  <div className="relative flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-emerald-600 text-sm font-semibold text-white dark:bg-emerald-500">
-                    {user.image ? (
-                      <Image
-                        src={user.image}
-                        alt="user"
-                        fill
-                        unoptimized
-                        className="object-cover"
-                      />
-                    ) : (
-                      user.name?.charAt(0).toUpperCase() || 'U'
-                    )}
-                  </div>
-                  <div className="flex min-w-0 flex-col group-data-[collapsible=icon]:hidden">
-                    <span className="text-sidebar-foreground truncate text-sm font-medium">
-                      {user.name}
-                    </span>
-                    <span className="text-sidebar-foreground/60 truncate text-xs">
-                      {user.email}
-                    </span>
-                  </div>
-                </MenuTrigger>
-                <MenuPopup
-                  align="start"
-                  side="right"
-                  sideOffset={4}
-                  className="w-56"
-                >
-                  <MenuGroup>
-                    <MenuGroupLabel>Account</MenuGroupLabel>
-                    <MenuItem>
-                      <User className="size-4 text-emerald-600 dark:text-emerald-400" />
-                      Profile
-                    </MenuItem>
-                    <MenuItem>
-                      <CreditCard className="size-4 text-emerald-600 dark:text-emerald-400" />
-                      Billing
-                    </MenuItem>
-                  </MenuGroup>
-                </MenuPopup>
-              </Menu>
+                  ) : (
+                    user.name?.charAt(0).toUpperCase() || 'U'
+                  )}
+                </div>
+                <div className="flex min-w-0 flex-col group-data-[collapsible=icon]:hidden">
+                  <span className="text-sidebar-foreground truncate text-sm font-medium">
+                    {user.name}
+                  </span>
+                  <span className="text-sidebar-foreground/60 truncate text-xs">
+                    {user.email}
+                  </span>
+                </div>
+              </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem className="flex gap-2">
               <Logout
