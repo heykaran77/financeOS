@@ -34,7 +34,7 @@ export function AccountCardStack({
 
   return (
     <div
-      className="perspective-1000 relative h-full min-h-[220px] w-full"
+      className="perspective-1000 relative h-full min-h-55 w-full"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -48,7 +48,11 @@ export function AccountCardStack({
               initial={{ opacity: 0, filter: 'blur(10px)' }}
               animate={{
                 opacity: 1,
-                filter: index > 0 ? 'blur(3px)' : 'blur(0px)',
+                filter: isHovered
+                  ? 'blur(0px)'
+                  : index > 0
+                    ? 'blur(3px)'
+                    : 'blur(0px)',
                 y: isHovered ? index * 8 : 0,
                 scale: 1 - index * 0.04,
                 zIndex: cards.length - index,

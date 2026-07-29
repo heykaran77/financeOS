@@ -23,6 +23,7 @@ import {
   Smartphone,
   Globe,
   CircleEllipsis,
+  Trash2,
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -61,6 +62,7 @@ import {
 } from '@/components/ui/empty';
 import { NumberFlowCurrency } from '@/components/common/number-flow-currency';
 import type { TransactionWithRelations } from '@/lib/queries/transaction.queries';
+import { DeleteTransactionsDialog } from '@/components/common/quick-actions/delete-transactions-dialog';
 
 // ─── Helpers ────────────────────────────────────────────────────
 
@@ -326,6 +328,9 @@ export function TransactionTable({ data, totalCount }: TransactionTableProps) {
     { desc: true, id: 'date' },
   ]);
 
+  const [rowSelection, setRowSelection] = useState({});
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
   const table = useReactTable({
     columns,
     data,
@@ -335,11 +340,19 @@ export function TransactionTable({ data, totalCount }: TransactionTableProps) {
     getSortedRowModel: getSortedRowModel(),
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
+    onRowSelectionChange: setRowSelection,
     state: {
       pagination,
       sorting,
+      rowSelection,
     },
   });
+
+  const selectedRows = table.getSelectedRowModel
+    ? table.getSelectedRowModel().rows
+    : table.getRowModel().rows.filter((r) => r.getIsSelected());
+  const selectedIds = selectedRows.map((row) => row.original.id);
+  const selectedCount = Object.keys(rowSelection).length;
 
   const { pageIndex, pageSize } = table.getState().pagination;
   const totalRows = table.getRowCount();
@@ -533,6 +546,39 @@ export function TransactionTable({ data, totalCount }: TransactionTableProps) {
           </Pagination>
         </div>
       </CardFrameFooter>
+
+      {/* Floating Bulk Actions Bar */}
+      {selectedCount > 0 && (
+        <div className="bg-background text-foreground animate-in slide-in-from-bottom-5 absolute bottom-4 left-1/2 z-50 flex -translate-x-1/2 items-center gap-4 rounded-full border px-4 py-2 shadow-xl">
+          <span className="text-sm font-medium">
+            {selectedCount} transaction{selectedCount === 1 ? '' : 's'} selected
+          </span>
+          <div className="flex items-center gap-2">
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => setRowSelection({})}
+            >
+              Clear
+            </Button>
+            <Button
+              size="sm"
+              variant="destructive"
+              onClick={() => setDeleteDialogOpen(true)}
+            >
+              <Trash2 className="mr-1.5 size-3.5" />
+              Delete
+            </Button>
+          </div>
+        </div>
+      )}
+
+      <DeleteTransactionsDialog
+        transactionIds={selectedIds}
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        onSuccess={() => setRowSelection({})}
+      />
     </CardFrame>
   );
 }
