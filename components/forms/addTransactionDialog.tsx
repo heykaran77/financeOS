@@ -14,6 +14,7 @@ import {
   FileSpreadsheetIcon,
   InfoIcon,
   AlertTriangleIcon,
+  Clock,
 } from 'lucide-react';
 
 import {
@@ -688,11 +689,15 @@ function CsvUploadForm() {
       </label>
 
       {/* Coming-soon notice */}
-      <div className="border-border bg-muted/30 flex w-full items-start gap-3 rounded-lg border p-4 text-left">
-        <InfoIcon className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-        <div>
-          <p className="text-foreground text-sm font-medium">Coming soon</p>
-          <p className="text-muted-foreground mt-0.5 text-xs">
+      <div className="relative flex w-full flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-emerald-500/20 bg-emerald-500/5 p-5 text-center">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/10">
+          <Clock className="h-5 w-5 text-emerald-500" />
+        </div>
+        <div className="space-y-1">
+          <h4 className="text-sm font-medium text-emerald-400">
+            Under Development
+          </h4>
+          <p className="text-muted-foreground mx-auto max-w-[300px] text-xs">
             Bulk import via CSV or Excel is under development. You&apos;ll be
             able to map columns, preview rows, and import hundreds of
             transactions at once.
