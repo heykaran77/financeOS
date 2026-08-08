@@ -1,9 +1,9 @@
 import { CardFrame } from '@/components/ui/card';
-import { SparklesIcon } from 'lucide-react';
+import { SparklesIcon, Clock } from 'lucide-react';
 
 export function AiInsightsCard() {
   return (
-    <CardFrame className="flex h-full flex-col gap-4 p-6">
+    <CardFrame className="relative flex h-full flex-col gap-4 overflow-hidden p-6">
       <div className="flex items-center gap-2">
         <SparklesIcon className="h-5 w-5 text-emerald-500" />
         <h3 className="font-advercase-regular text-lg text-emerald-400">
@@ -11,19 +11,19 @@ export function AiInsightsCard() {
         </h3>
       </div>
 
-      <div className="text-foreground/80 mt-2 flex flex-col gap-4 text-sm">
-        <p>
-          &quot;You spent <span className="font-medium">18% more</span> on Food
-          this month.&quot;
-        </p>
-        <p>
-          &quot;Swiggy accounts for <span className="font-medium">42%</span> of
-          your dining expenses.&quot;
-        </p>
-        <p>
-          &quot;Your highest spending day was{' '}
-          <span className="font-medium">May 24</span>.&quot;
-        </p>
+      <div className="relative mt-2 flex flex-1 flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-emerald-500/20 bg-emerald-500/5 p-6 text-center">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/10">
+          <Clock className="h-5 w-5 text-emerald-500" />
+        </div>
+        <div className="space-y-1">
+          <h4 className="text-sm font-medium text-emerald-400">
+            Under Development
+          </h4>
+          <p className="text-muted-foreground mx-auto max-w-[250px] text-xs">
+            We&apos;re building smart, personalized financial insights for you.
+            Available soon!
+          </p>
+        </div>
       </div>
     </CardFrame>
   );
